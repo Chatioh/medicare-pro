@@ -1,0 +1,119 @@
+openapi: "3.0.3"
+info:
+  title: MediCare Pro API
+  description: Backend API for MediCare Pro healthcare management system
+  version: "1.0.0"
+  contact:
+    name: MediCare Pro Team
+
+servers:
+  - url: http://localhost:5000/api
+    description: Development server
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - full_name
+                - email
+                - password
+                - role
+              properties:
+                full_name:
+                  type: string
+                  example: John Doe
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: password123
+                role:
+                  type: string
+                  enum: [admin, doctor, nurse, receptionist]
+                  example: doctor
+      responses:
+        "201":
+          description: User registered successfully
+        "400":
+          description: Validation error
+        "409":
+          description: Email already registered
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: john@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password123
+      responses:
+        "200":
+          description: Login successful
+        "401":
+          description: Invalid email or password
+        "403":
+          description: Account is deactivated
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout a user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out successfully
+        "401":
+          description: No token provided or invalid token
+
+  /auth/me:
+    get:
+      tags:
+        - Auth
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile retrieved
+        "401":
+          description: No token provided or invalid token
+        "404":
+          description: User not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
