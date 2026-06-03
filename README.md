@@ -191,7 +191,7 @@ Make sure you have the following installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/medicare-pro.git
+git clone https://https://github.com/Chatioh/medicare-pro.git
 cd medicare-pro
 ```
 
@@ -441,9 +441,8 @@ npm run test:coverage
 
 ## 👨‍💻 Author
 
-**[YOUR FULL NAME]**  
-Matriculation Number: [YOUR MATRIC NUMBER]  
-Master of Science in Software Engineering  
+**CHATIOH ZELIO DENSLEY**  
+Master of Technology in Software Engineering  
 YAOUNDE INTERNATIONAL BUSINESS SCHOOL (YIBS)  
 Academic Year 2025–2026
 
@@ -454,14 +453,6 @@ Academic Year 2025–2026
 - **Prof. Yongho Louis** — Course Coordinator, Advanced Software Engineering Project
 - YIBS Department of Software Engineering
 - The open-source community for the tools and libraries used in this project
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
 
 <div align="center">
   <p>Built with ❤️ for YIBS Advanced Software Engineering Project 2025–2026</p>
