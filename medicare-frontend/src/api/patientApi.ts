@@ -21,6 +21,11 @@ export const updatePatient = async (id: string, payload: Record<string, unknown>
   return data;
 };
 
+export const deletePatient = async (id: string): Promise<ApiResponse<null>> => {
+  const { data } = await api.delete(`/patients/${id}`);
+  return data;
+};
+
 export const getMedicalHistory = async (id: string): Promise<ApiResponse<{ medicalHistory: MedicalHistory }>> => {
   const { data } = await api.get(`/patients/${id}/history`);
   return data;

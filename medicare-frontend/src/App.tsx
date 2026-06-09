@@ -15,6 +15,7 @@ import DoctorList from './pages/Doctors/DoctorList';
 import DoctorProfile from './pages/Doctors/DoctorProfile';
 import PrescriptionList from './pages/Prescriptions/PrescriptionList';
 import PrescriptionForm from './pages/Prescriptions/PrescriptionForm';
+import PrescriptionDetail from './pages/Prescriptions/PrescriptionDetail';
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -42,9 +43,11 @@ const AppRoutes = () => {
       <Route path="/appointments" element={<ProtectedRoute><AppointmentList /></ProtectedRoute>} />
       <Route path="/appointments/new" element={<ProtectedRoute><AppointmentForm /></ProtectedRoute>} />
       <Route path="/appointments/:id" element={<ProtectedRoute><AppointmentDetail /></ProtectedRoute>} />
+      <Route path="/appointments/:id/edit" element={<ProtectedRoute><AppointmentForm /></ProtectedRoute>} />
       <Route path="/doctors" element={<ProtectedRoute><DoctorList /></ProtectedRoute>} />
       <Route path="/doctors/:id" element={<ProtectedRoute><DoctorProfile /></ProtectedRoute>} />
       <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
+      <Route path="/prescriptions/:id" element={<ProtectedRoute><PrescriptionDetail /></ProtectedRoute>} />
       <Route path="/prescriptions/new" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -21,6 +21,11 @@ export const updateDoctor = async (id: string, payload: Record<string, unknown>)
   return data;
 };
 
+export const deleteDoctor = async (id: string): Promise<ApiResponse<null>> => {
+  const { data } = await api.delete(`/doctors/${id}`);
+  return data;
+};
+
 export const getDoctorAvailability = async (id: string, date: string): Promise<ApiResponse<{ available: boolean; workingHours: { start: string; end: string }; bookedSlots: { start_time: string; end_time: string }[] }>> => {
   const { data } = await api.get(`/doctors/${id}/availability`, { params: { date } });
   return data;

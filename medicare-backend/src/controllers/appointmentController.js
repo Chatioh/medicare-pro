@@ -59,6 +59,10 @@ const createAppointment = async (req, res, next) => {
       return errorResponse(res, 'Doctor already has an appointment during this time.', 409);
     }
 
+    const year = new Date().getFullYear();
+    const count = await Appointment.count() + 1;
+    const appointment_number = `APT-${year}-${String(count).padStart(4, '0')}`;
+
     const appointment = await Appointment.create({
       patient_id,
       doctor_id,
@@ -67,7 +71,8 @@ const createAppointment = async (req, res, next) => {
       end_time,
       type,
       reason,
-      created_by: req.user.userId
+      created_by: req.user.userId,
+      appointment_number
     });
 
     return successResponse(res, { appointment }, 'Appointment created.', 201);
@@ -107,7 +112,7 @@ const updateAppointment = async (req, res, next) => {
       }
     }
 
-    const allowedFields = ['status', 'notes', 'reason'];
+    const allowedFields = ['status', 'notes', 'reason', 'patient_id', 'doctor_id', 'appointment_date', 'start_time', 'end_time', 'type'];
     const updates = {};
     allowedFields.forEach((field) => {
       if (req.body[field] !== undefined) updates[field] = req.body[field];
@@ -117,14 +122,29 @@ const updateAppointment = async (req, res, next) => {
       const date = updates.appointment_date || appointment.appointment_date;
       const start = updates.start_time || appointment.start_time;
       const end = updates.end_time || appointment.end_time;
+      const doctorId = updates.doctor_id || appointment.doctor_id;
 
-      const conflict = await checkConflicts(appointment.doctor_id, date, start, end, appointment.id);
-      if (conflict.hasConflict) {
-        return errorResponse(res, 'Time slot conflicts with another appointment.', 409);
+      // If any of the scheduling fields changed, check for conflicts
+      if (date !== appointment.appointment_date || start !== appointment.start_time || end !== appointment.end_time || doctorId !== appointment.doctor_id) {
+        const conflict = await checkConflicts(doctorId, date, start, end, appointment.id);
+        if (conflict.hasConflict) {
+          return errorResponse(res, 'Time slot conflicts with another appointment.', 409);
+        }
       }
     }
 
-    await appointment.update(updates);
+    await appointment.update({
+        ...updates,
+        patient_id: updates.patient_id ?? appointment.patient_id,
+        doctor_id: updates.doctor_id ?? appointment.doctor_id,
+        appointment_date: updates.appointment_date ?? appointment.appointment_date,
+        start_time: updates.start_time ?? appointment.start_time,
+        end_time: updates.end_time ?? appointment.end_time,
+        type: updates.type ?? appointment.type,
+        reason: updates.reason ?? appointment.reason,
+        status: updates.status ?? appointment.status,
+        notes: updates.notes ?? appointment.notes
+      });
 
     return successResponse(res, { appointment }, 'Appointment updated.');
   } catch (err) {

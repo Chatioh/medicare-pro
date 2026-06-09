@@ -27,11 +27,18 @@ const checkDoctorAvailability = async (doctorId, appointmentDate) => {
   const doctor = await Doctor.findByPk(doctorId);
   if (!doctor) return { available: false, reason: 'Doctor not found.' };
 
-  const dayName = new Date(appointmentDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+  const [y, m, d] = appointmentDate.split('-');
+  const dateObj = new Date(y, m - 1, d);
+  const dayIndex = dateObj.getDay();
+
+  const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const dayShortNames = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const dayName = dayNames[dayIndex];
+  const dayShort = dayShortNames[dayIndex];
 
   if (doctor.available_days) {
     const days = doctor.available_days.split(',').map((d) => d.trim().toLowerCase());
-    if (!days.includes(dayName)) {
+    if (!days.includes(dayName) && !days.includes(dayShort)) {
       return { available: false, reason: `Doctor not available on ${dayName}s.` };
     }
   }

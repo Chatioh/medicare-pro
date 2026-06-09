@@ -45,22 +45,27 @@ const getAllPrescriptions = async (req, res, next) => {
 
 const createPrescription = async (req, res, next) => {
   try {
-    const { patient_id, appointment_id, diagnosis, items, notes, expires_at } = req.body;
+    const { patient_id, doctor_id, appointment_id, diagnosis, items, notes, expires_at } = req.body;
 
     if (!items || items.length === 0) {
       return errorResponse(res, 'At least one medication item is required.', 400);
     }
 
-    const doctor = await Doctor.findOne({ where: { user_id: req.user.userId } });
-    if (!doctor) return errorResponse(res, 'Doctor profile not found.', 404);
+    const doctorId = doctor_id || (await Doctor.findOne({ where: { user_id: req.user.userId } }))?.id;
+    if (!doctorId) return errorResponse(res, 'Doctor profile not found.', 404);
+
+    const year = new Date().getFullYear();
+    const count = await Prescription.count() + 1;
+    const prescription_number = `RX-${year}-${String(count).padStart(4, '0')}`;
 
     const prescription = await Prescription.create({
       patient_id,
-      doctor_id: doctor.id,
-      appointment_id,
+      doctor_id: doctorId,
+      appointment_id: appointment_id || null,
       diagnosis,
       notes,
-      expires_at
+      expires_at,
+      prescription_number
     });
 
     const prescriptionItems = items.map((item) => ({
