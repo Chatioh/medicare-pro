@@ -20,3 +20,8 @@ export const dispensePrescription = async (id: string): Promise<ApiResponse<{ pr
   const { data } = await api.put(`/prescriptions/${id}/dispense`);
   return data;
 };
+
+export const cancelPrescription = async (id: string): Promise<ApiResponse<{ prescription: Prescription }>> => {
+  const { data } = await api.put(`/prescriptions/${id}/cancel`);
+  return data;
+};

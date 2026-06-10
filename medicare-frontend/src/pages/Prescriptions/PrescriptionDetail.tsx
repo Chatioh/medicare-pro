@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getPrescriptionById } from '../../api/prescriptionApi';
 import { Prescription, PrescriptionItem } from '../../types';
 import Card from '../../components/ui/Card';

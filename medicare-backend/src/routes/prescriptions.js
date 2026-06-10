@@ -10,5 +10,6 @@ router.get('/', authorize('doctor', 'admin', 'nurse'), prescriptionController.ge
 router.post('/', authorize('doctor', 'admin'), prescriptionController.createPrescription);
 router.get('/:id', prescriptionController.getPrescriptionById);
 router.put('/:id/dispense', authorize('nurse', 'admin'), prescriptionController.dispensePrescription);
+router.put('/:id/cancel', authorize('doctor', 'admin'), prescriptionController.cancelPrescription);
 
 module.exports = router;

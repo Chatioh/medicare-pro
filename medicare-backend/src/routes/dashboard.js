@@ -6,8 +6,8 @@ const authorize = require('../middleware/rbac');
 
 router.use(authenticate);
 
-router.get('/stats', authorize('admin'), dashboardController.getStats);
-router.get('/appointments-today', authorize('admin', 'doctor', 'nurse'), dashboardController.getAppointmentsToday);
-router.get('/recent-patients', authorize('admin', 'receptionist'), dashboardController.getRecentPatients);
+router.get('/stats', authorize('admin', 'doctor', 'nurse', 'receptionist'), dashboardController.getStats);
+router.get('/appointments-today', authorize('admin', 'doctor', 'nurse', 'receptionist'), dashboardController.getAppointmentsToday);
+router.get('/recent-patients', authorize('admin', 'doctor', 'nurse', 'receptionist'), dashboardController.getRecentPatients);
 
 module.exports = router;

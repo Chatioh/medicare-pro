@@ -100,12 +100,16 @@ const AppointmentForm = () => {
 
     const timer = setTimeout(async () => {
       try {
-        const res = await checkConflict({
+        const params: Record<string, string> = {
           doctor_id: formData.doctor_id,
           date: formData.appointment_date,
           start_time: formData.start_time,
           end_time: formData.end_time,
-        });
+        };
+        if (isEditMode && id) {
+          params.appointment_id = id;
+        }
+        const res = await checkConflict(params);
         const available = res?.data?.available ?? (res as any)?.available;
         const conflicting = res?.data?.conflictingAppointment;
         if (available) {

@@ -167,13 +167,13 @@ const cancelAppointment = async (req, res, next) => {
 
 const checkConflict = async (req, res, next) => {
   try {
-    const { doctor_id, date, start_time, end_time } = req.query;
+    const { doctor_id, date, start_time, end_time, appointment_id } = req.query;
 
     if (!doctor_id || !date || !start_time || !end_time) {
       return errorResponse(res, 'doctor_id, date, start_time, and end_time are required.', 400);
     }
 
-    const result = await checkConflicts(doctor_id, date, start_time, end_time);
+    const result = await checkConflicts(doctor_id, date, start_time, end_time, appointment_id || null);
 
     return successResponse(res, {
       available: !result.hasConflict,

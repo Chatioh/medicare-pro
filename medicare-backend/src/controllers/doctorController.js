@@ -92,7 +92,20 @@ const updateDoctor = async (req, res, next) => {
 
     await doctor.update(updates);
 
-    return successResponse(res, { doctor }, 'Doctor updated.');
+    if (req.body.full_name !== undefined) {
+      const user = await User.findByPk(doctor.user_id);
+      if (user) {
+        await user.update({ full_name: req.body.full_name });
+      }
+    }
+
+    const updatedDoctor = await Doctor.findByPk(req.params.id, {
+      include: [
+        { model: User, as: 'user', attributes: ['full_name', 'email'] }
+      ]
+    });
+
+    return successResponse(res, { doctor: updatedDoctor }, 'Doctor updated.');
   } catch (err) {
     next(err);
   }

@@ -2,13 +2,21 @@ const { User, Doctor, Patient, Appointment, Prescription } = require('../models'
 const { Op } = require('sequelize');
 const { successResponse, errorResponse } = require('../utils/apiResponse');
 
+const getDateString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const getStats = async (req, res, next) => {
   try {
     const totalPatients = await Patient.count();
     const totalDoctors = await Doctor.count();
     const totalAppointments = await Appointment.count();
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = getDateString();
 
     const appointmentsToday = await Appointment.count({
       where: { appointment_date: today }
@@ -45,7 +53,7 @@ const getStats = async (req, res, next) => {
 
 const getAppointmentsToday = async (req, res, next) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = getDateString();
 
     const appointments = await Appointment.findAll({
       where: { appointment_date: today },

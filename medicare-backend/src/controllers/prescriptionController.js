@@ -139,4 +139,20 @@ const dispensePrescription = async (req, res, next) => {
   }
 };
 
-module.exports = { getAllPrescriptions, createPrescription, getPrescriptionById, dispensePrescription };
+const cancelPrescription = async (req, res, next) => {
+  try {
+    const prescription = await Prescription.findByPk(req.params.id);
+    if (!prescription) return errorResponse(res, 'Prescription not found.', 404);
+
+    if (prescription.status !== 'issued') {
+      return errorResponse(res, `Cannot cancel a prescription that is already ${prescription.status}.`, 400);
+    }
+
+    await prescription.update({ status: 'cancelled' });
+    return successResponse(res, { prescription }, 'Prescription cancelled successfully.');
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getAllPrescriptions, createPrescription, getPrescriptionById, dispensePrescription, cancelPrescription };

@@ -25,6 +25,7 @@ const DoctorProfile = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editForm, setEditForm] = useState({
+    full_name: '',
     specialization: '',
     phone: '',
     available_days: '',
@@ -48,6 +49,7 @@ const DoctorProfile = () => {
         setAppointments(Array.isArray(appts) ? appts : []);
         if (d) {
           setEditForm({
+            full_name: d.user?.full_name || '',
             specialization: d.specialization || '',
             phone: d.phone || '',
             available_days: d.available_days || '',
@@ -68,6 +70,7 @@ const DoctorProfile = () => {
   const openEditModal = () => {
     if (!doctor) return;
     setEditForm({
+      full_name: doctor.user?.full_name || '',
       specialization: doctor.specialization || '',
       phone: doctor.phone || '',
       available_days: doctor.available_days || '',
@@ -295,6 +298,7 @@ const DoctorProfile = () => {
 
       <Modal title="Edit Doctor Profile" isOpen={editModalOpen} onClose={() => setEditModalOpen(false)}>
         <div className="space-y-4">
+          <Input label="Full Name" name="full_name" value={editForm.full_name} onChange={handleEditChange} />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Specialization" name="specialization" value={editForm.specialization} onChange={handleEditChange} />
             <Input label="Phone" name="phone" value={editForm.phone} onChange={handleEditChange} />

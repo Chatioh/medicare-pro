@@ -1,23 +1,30 @@
 import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPrescriptions, dispensePrescription } from '../../api/prescriptionApi';
+import { getPrescriptions, dispensePrescription, cancelPrescription } from '../../api/prescriptionApi';
 import { Prescription } from '../../types';
 import Button from '../../components/ui/Button';
 import Table, { Column } from '../../components/ui/Table';
 import Badge from '../../components/ui/Badge';
 import Spinner from '../../components/ui/Spinner';
 import PageWrapper from '../../components/layout/PageWrapper';
+import Modal from '../../components/ui/Modal';
 import { formatDate } from '../../utils/formatters';
-import { PlusCircle, Eye, CheckCircle } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { PlusCircle, Eye, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
 const STATUSES = ['', 'issued', 'dispensed', 'expired', 'cancelled'];
 
 const PrescriptionList = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [prescriptionToCancel, setPrescriptionToCancel] = useState<Prescription | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   const fetchPrescriptions = useCallback(async () => {
     setLoading(true);
@@ -58,6 +65,32 @@ const PrescriptionList = () => {
       fetchPrescriptions();
     } catch {
       // silently fail
+    }
+  };
+
+  const handleCancelClick = (prescription: Prescription) => {
+    setPrescriptionToCancel(prescription);
+    setCancelModalOpen(true);
+    setCancelError(null);
+  };
+
+  const handleCancelConfirm = async () => {
+    if (!prescriptionToCancel) return;
+    setCancelling(true);
+    try {
+      await cancelPrescription(prescriptionToCancel.id);
+      setCancelModalOpen(false);
+      setPrescriptionToCancel(null);
+      fetchPrescriptions();
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 400) {
+        setCancelError(err?.response?.data?.message ?? 'Cannot cancel this prescription');
+      } else {
+        setCancelError('Failed to cancel prescription. Please try again.');
+      }
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -118,6 +151,12 @@ const PrescriptionList = () => {
               Dispense
             </Button>
           )}
+          {(row.status as string) === 'issued' && (user?.role === 'doctor' || user?.role === 'admin') && (
+            <Button size="sm" variant="danger" onClick={() => handleCancelClick(row as unknown as Prescription)}>
+              <XCircle className="w-4 h-4 mr-1" />
+              Cancel
+            </Button>
+          )}
         </div>
       ),
     },
@@ -172,6 +211,53 @@ const PrescriptionList = () => {
           )}
         </div>
       </div>
+
+      <Modal isOpen={cancelModalOpen} onClose={() => setCancelModalOpen(false)} title="Cancel Prescription">
+        <div className="p-6">
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-100 mx-auto mb-4">
+            <AlertTriangle className="h-6 w-6 text-red-600" />
+          </div>
+          <h3 className="text-center text-lg font-semibold text-gray-900 mb-2">
+            Cancel Prescription?
+          </h3>
+          <p className="text-center text-sm text-gray-500 mb-2">
+            You are about to cancel prescription:
+          </p>
+          <p className="text-center font-mono font-semibold text-blue-600 mb-1">
+            {prescriptionToCancel?.prescription_number}
+          </p>
+          <p className="text-center text-sm text-gray-700 mb-4">
+            Patient: <span className="font-medium">{prescriptionToCancel?.patient?.full_name}</span>
+          </p>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+            <p className="text-xs text-amber-700 text-center">
+              ⚠️ This action cannot be undone. The prescription will be permanently marked as cancelled.
+              If needed, a new prescription must be issued.
+            </p>
+          </div>
+          {cancelError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 text-center">
+              {cancelError}
+            </div>
+          )}
+          <div className="flex gap-3 justify-center">
+            <Button
+              variant="secondary"
+              onClick={() => setCancelModalOpen(false)}
+              disabled={cancelling}
+            >
+              Keep Prescription
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleCancelConfirm}
+              loading={cancelling}
+            >
+              Yes, Cancel Prescription
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </PageWrapper>
   );
 };
