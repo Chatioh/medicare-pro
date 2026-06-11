@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { LayoutDashboard, Users, Calendar, FileText, UserCheck, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, Users, Calendar, FileText, UserCheck, UserCog, LogOut, X } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -13,6 +13,7 @@ const navItems = [
   { to: '/appointments', label: 'Appointments', icon: Calendar },
   { to: '/prescriptions', label: 'Prescriptions', icon: FileText },
   { to: '/doctors', label: 'Doctors', icon: UserCheck },
+  { to: '/staff', label: 'Staff', icon: UserCog },
 ];
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
