@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../types';
 import * as authApi from '../api/authApi';
 
@@ -7,6 +8,7 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
+  hasRole: (...roles: string[]) => boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -14,11 +16,16 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = !!user && !!token;
+
+  const hasRole = (...roles: string[]) => {
+    return roles.includes(user?.role ?? '');
+  };
 
   const loadUser = useCallback(async () => {
     const storedToken = localStorage.getItem('token');
@@ -44,12 +51,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [loadUser]);
 
   const login = async (email: string, password: string) => {
-    const response = await authApi.login(email, password);
-    const { token: newToken, user: userData } = response.data;
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setToken(newToken);
-    setUser(userData);
+    try {
+      const res = await authApi.login(email, password);
+      const { token: newToken, user: userData } = res.data;
+
+      localStorage.setItem('token', newToken);
+      setToken(newToken);
+      setUser(userData);
+
+      const role = userData?.role;
+      if (role === 'admin') {
+        navigate('/dashboard');
+      } else if (role === 'doctor') {
+        navigate('/appointments');
+      } else if (role === 'nurse') {
+        navigate('/patients');
+      } else if (role === 'receptionist') {
+        navigate('/appointments');
+      } else {
+        navigate('/appointments');
+      }
+    } catch (err: any) {
+      throw err;
+    }
   };
 
   const logout = async () => {
@@ -65,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, isAuthenticated, hasRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,17 +7,24 @@ interface SidebarProps {
   onClose: () => void;
 }
 
-const navItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/patients', label: 'Patients', icon: Users },
-  { to: '/appointments', label: 'Appointments', icon: Calendar },
-  { to: '/prescriptions', label: 'Prescriptions', icon: FileText },
-  { to: '/doctors', label: 'Doctors', icon: UserCheck },
-  { to: '/staff', label: 'Staff', icon: UserCog },
-];
+interface NavItem {
+  to: string;
+  label: string;
+  icon: any;
+  show: boolean;
+}
 
 const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
-  const { user, logout } = useAuth();
+  const { user, logout, hasRole } = useAuth();
+
+  const navItems: NavItem[] = [
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, show: hasRole('admin') },
+    { to: '/patients', label: 'Patients', icon: Users, show: hasRole('admin', 'doctor', 'nurse', 'receptionist') },
+    { to: '/appointments', label: 'Appointments', icon: Calendar, show: hasRole('admin', 'doctor', 'nurse', 'receptionist') },
+    { to: '/prescriptions', label: 'Prescriptions', icon: FileText, show: hasRole('admin', 'doctor') },
+    { to: '/doctors', label: 'Doctors', icon: UserCheck, show: hasRole('admin') },
+    { to: '/staff', label: 'Staff', icon: UserCog, show: hasRole('admin') },
+  ];
 
   return (
     <>
@@ -46,7 +53,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
           </button>
         </div>
         <nav className="flex-1 py-4 space-y-1">
-          {navItems.map((item) => (
+          {navItems.filter(item => item.show).map((item) => (
             <NavLink
               key={item.to}
               to={item.to}

@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import Spinner from './components/ui/Spinner';
 
 import Login from './pages/Login';
+import Unauthorized from './pages/Unauthorized';
 import Dashboard from './pages/Dashboard';
 import PatientList from './pages/Patients/PatientList';
 import PatientForm from './pages/Patients/PatientForm';
@@ -25,6 +26,14 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+const RoleRoute = ({ children, roles }: { children: ReactNode; roles: string[] }) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <div className="flex items-center justify-center h-screen"><Spinner /></div>;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (!roles.includes(user?.role ?? '')) return <Navigate to="/unauthorized" replace />;
+  return <>{children}</>;
+};
+
 const PublicRoute = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
   if (isLoading) return <Spinner />;
@@ -32,27 +41,48 @@ const PublicRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+const RootRedirect = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  if (isLoading) return <div className="flex items-center justify-center h-screen"><Spinner /></div>;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  switch (user?.role) {
+    case 'admin': return <Navigate to="/dashboard" replace />;
+    case 'doctor': return <Navigate to="/appointments" replace />;
+    case 'nurse': return <Navigate to="/patients" replace />;
+    case 'receptionist': return <Navigate to="/appointments" replace />;
+    default: return <Navigate to="/login" replace />;
+  }
+};
+
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="/" element={<RootRedirect />} />
+
+      <Route path="/dashboard" element={<RoleRoute roles={['admin']}><Dashboard /></RoleRoute>} />
+
       <Route path="/patients" element={<ProtectedRoute><PatientList /></ProtectedRoute>} />
-      <Route path="/patients/new" element={<ProtectedRoute><PatientForm /></ProtectedRoute>} />
+      <Route path="/patients/new" element={<RoleRoute roles={['admin', 'receptionist']}><PatientForm /></RoleRoute>} />
       <Route path="/patients/:id" element={<ProtectedRoute><PatientDetail /></ProtectedRoute>} />
-      <Route path="/patients/:id/edit" element={<ProtectedRoute><PatientForm /></ProtectedRoute>} />
+      <Route path="/patients/:id/edit" element={<RoleRoute roles={['admin', 'doctor', 'nurse', 'receptionist']}><PatientForm /></RoleRoute>} />
+
       <Route path="/appointments" element={<ProtectedRoute><AppointmentList /></ProtectedRoute>} />
-      <Route path="/appointments/new" element={<ProtectedRoute><AppointmentForm /></ProtectedRoute>} />
+      <Route path="/appointments/new" element={<RoleRoute roles={['admin', 'receptionist']}><AppointmentForm /></RoleRoute>} />
       <Route path="/appointments/:id" element={<ProtectedRoute><AppointmentDetail /></ProtectedRoute>} />
-      <Route path="/appointments/:id/edit" element={<ProtectedRoute><AppointmentForm /></ProtectedRoute>} />
-      <Route path="/doctors" element={<ProtectedRoute><DoctorList /></ProtectedRoute>} />
-      <Route path="/doctors/:id" element={<ProtectedRoute><DoctorProfile /></ProtectedRoute>} />
-      <Route path="/prescriptions" element={<ProtectedRoute><PrescriptionList /></ProtectedRoute>} />
-      <Route path="/prescriptions/:id" element={<ProtectedRoute><PrescriptionDetail /></ProtectedRoute>} />
-      <Route path="/prescriptions/new" element={<ProtectedRoute><PrescriptionForm /></ProtectedRoute>} />
-      <Route path="/staff" element={<ProtectedRoute><StaffList /></ProtectedRoute>} />
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/appointments/:id/edit" element={<RoleRoute roles={['admin', 'receptionist']}><AppointmentForm /></RoleRoute>} />
+
+      <Route path="/doctors" element={<RoleRoute roles={['admin']}><DoctorList /></RoleRoute>} />
+      <Route path="/doctors/:id" element={<RoleRoute roles={['admin', 'doctor']}><DoctorProfile /></RoleRoute>} />
+
+      <Route path="/prescriptions" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionList /></RoleRoute>} />
+      <Route path="/prescriptions/new" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionForm /></RoleRoute>} />
+      <Route path="/prescriptions/:id" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionDetail /></RoleRoute>} />
+
+      <Route path="/staff" element={<RoleRoute roles={['admin']}><StaffList /></RoleRoute>} />
+
+      <Route path="*" element={<Navigate to="/unauthorized" replace />} />
     </Routes>
   );
 };

@@ -16,7 +16,7 @@ const STATUSES = ['', 'issued', 'dispensed', 'expired', 'cancelled'];
 
 const PrescriptionList = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { hasRole } = useAuth();
   const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -145,13 +145,13 @@ const PrescriptionList = () => {
             <Eye className="w-4 h-4 mr-1" />
             View
           </Button>
-          {(row.status as string) === 'issued' && (
+          {(row.status as string) === 'issued' && hasRole('admin', 'nurse') && (
             <Button size="sm" variant="success" onClick={() => handleDispense(row.id as string)}>
               <CheckCircle className="w-4 h-4 mr-1" />
               Dispense
             </Button>
           )}
-          {(row.status as string) === 'issued' && (user?.role === 'doctor' || user?.role === 'admin') && (
+          {(row.status as string) === 'issued' && hasRole('admin', 'doctor') && (
             <Button size="sm" variant="danger" onClick={() => handleCancelClick(row as unknown as Prescription)}>
               <XCircle className="w-4 h-4 mr-1" />
               Cancel
@@ -170,10 +170,12 @@ const PrescriptionList = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Prescriptions</h1>
-            <Button variant="primary" onClick={() => navigate('/prescriptions/new')}>
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Issue Prescription
-            </Button>
+            {hasRole('admin', 'doctor') && (
+              <Button variant="primary" onClick={() => navigate('/prescriptions/new')}>
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Issue Prescription
+              </Button>
+            )}
           </div>
 
           <div className="flex gap-3 flex-wrap mb-4 items-end">

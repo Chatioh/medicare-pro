@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDoctors, createDoctor, deleteDoctor } from '../../api/doctorApi';
 import { Doctor } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 import api from '../../api/axios';
 import Button from '../../components/ui/Button';
 import Table, { Column } from '../../components/ui/Table';
@@ -16,6 +17,7 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const DoctorList = () => {
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -198,10 +200,12 @@ const DoctorList = () => {
               <Eye className="w-4 h-4 mr-1" />
               View
             </Button>
-            <Button size="sm" variant="danger" onClick={() => handleDeleteClick(d)}>
-              <Trash2 className="w-4 h-4 mr-1" />
-              Delete
-            </Button>
+            {hasRole('admin') && (
+              <Button size="sm" variant="danger" onClick={() => handleDeleteClick(d)}>
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete
+              </Button>
+            )}
           </div>
         );
       },
@@ -216,10 +220,12 @@ const DoctorList = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Doctors</h1>
-            <Button variant="primary" onClick={() => setAddModalOpen(true)}>
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Add Doctor
-            </Button>
+            {hasRole('admin') && (
+              <Button variant="primary" onClick={() => setAddModalOpen(true)}>
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Add Doctor
+              </Button>
+            )}
           </div>
 
           <div className="relative mb-6">

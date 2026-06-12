@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getPatients, deletePatient } from '../../api/patientApi';
 import { Patient } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/ui/Button';
 import Table, { Column } from '../../components/ui/Table';
 import Modal from '../../components/ui/Modal';
@@ -12,6 +13,7 @@ import { Search, PlusCircle, Eye, Pencil, Trash2, AlertTriangle } from 'lucide-r
 
 const PatientList = () => {
   const navigate = useNavigate();
+  const { hasRole } = useAuth();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -155,10 +157,12 @@ const PatientList = () => {
               <Pencil className="w-4 h-4 mr-1" />
               Edit
             </Button>
-            <Button size="sm" variant="danger" onClick={() => handleDeleteClick(p)}>
-              <Trash2 className="w-4 h-4 mr-1" />
-              Delete
-            </Button>
+            {hasRole('admin') && (
+              <Button size="sm" variant="danger" onClick={() => handleDeleteClick(p)}>
+                <Trash2 className="w-4 h-4 mr-1" />
+                Delete
+              </Button>
+            )}
           </div>
         );
       },
@@ -173,10 +177,12 @@ const PatientList = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Patients</h1>
-            <Button variant="primary" onClick={() => navigate('/patients/new')}>
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Register Patient
-            </Button>
+            {hasRole('admin', 'receptionist') && (
+              <Button variant="primary" onClick={() => navigate('/patients/new')}>
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Register Patient
+              </Button>
+            )}
           </div>
 
           <div className="relative mb-6">

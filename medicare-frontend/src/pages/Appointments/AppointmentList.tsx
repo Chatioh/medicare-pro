@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAppointments, cancelAppointment } from '../../api/appointmentApi';
 import { Appointment } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 import Button from '../../components/ui/Button';
 import Table, { Column } from '../../components/ui/Table';
 import Badge from '../../components/ui/Badge';
@@ -15,6 +16,7 @@ const STATUSES = ['', 'scheduled', 'confirmed', 'completed', 'cancelled'];
 
 const AppointmentList = () => {
   const navigate = useNavigate();
+  const { user, hasRole } = useAuth();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ status: '', date: '', doctor_id: '' });
@@ -32,6 +34,9 @@ const AppointmentList = () => {
       const params: Record<string, unknown> = { page, limit };
       if (filters.status) params.status = filters.status;
       if (filters.date) params.date = filters.date;
+      if (hasRole('doctor')) {
+        params.doctor_user_id = user?.id;
+      }
       const res = await getAppointments(params);
 
       let rows = [];
@@ -168,10 +173,12 @@ const AppointmentList = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
-            <Button variant="primary" onClick={() => navigate('/appointments/new')}>
-              <PlusCircle className="w-4 h-4 mr-2" />
-              Book Appointment
-            </Button>
+            {hasRole('admin', 'receptionist') && (
+              <Button variant="primary" onClick={() => navigate('/appointments/new')}>
+                <PlusCircle className="w-4 h-4 mr-2" />
+                Book Appointment
+              </Button>
+            )}
           </div>
 
           <div className="flex gap-3 flex-wrap mb-4 items-end">
