@@ -341,6 +341,7 @@ const PatientDetail = () => {
           </Card>
 
           <Modal title="Edit Medical History" isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)}>
+            {/* Scrollable fields */}
             <div className="space-y-4">
               {historyFields.map(({ label, key }) => (
                 <div key={key}>
@@ -350,12 +351,13 @@ const PatientDetail = () => {
                     value={historyForm[key as keyof typeof historyForm]}
                     onChange={handleHistoryChange}
                     rows={3}
-                    className="block w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="block w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
                     placeholder={`Enter ${label.toLowerCase()}`}
                   />
                 </div>
               ))}
-              <div className="flex gap-3 justify-end pt-2">
+              {/* Sticky action row pinned to the bottom of the scrollable area */}
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 sticky bottom-0 bg-white pb-1">
                 <Button variant="secondary" onClick={() => setHistoryModalOpen(false)}>
                   Cancel
                 </Button>

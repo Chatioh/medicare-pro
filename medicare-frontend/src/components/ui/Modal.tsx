@@ -35,14 +35,15 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto py-6 px-4">
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <div
-        className={`relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 z-10 transition-all duration-200 ${
+        className={`relative bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-auto z-10 transition-all duration-200 flex flex-col max-h-[90vh] ${
           visible ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
       >
-        <div className="flex items-center justify-between px-6 pt-6 pb-0">
+        {/* ── Sticky header ── */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100 flex-shrink-0">
           <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
           <button
             onClick={onClose}
@@ -53,7 +54,8 @@ const Modal = ({ title, isOpen, onClose, children }: ModalProps) => {
             </svg>
           </button>
         </div>
-        <div className="p-6">{children}</div>
+        {/* ── Scrollable body ── */}
+        <div className="p-6 overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
   );

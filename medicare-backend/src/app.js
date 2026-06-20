@@ -20,8 +20,24 @@ const app = express();
 
 // ─── Security Middleware ────────────────────────────────────
 app.use(helmet());
+
+const allowedOrigins = (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:3000')
+  .split(',')
+  .map((o) => o.trim());
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    // Allow any explicitly listed origin
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // In development, allow any LAN/localhost origin on port 3000
+    if (process.env.NODE_ENV !== 'production') {
+      const devPattern = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):3000$/;
+      if (devPattern.test(origin)) return callback(null, true);
+    }
+    callback(new Error(`CORS: origin '${origin}' not allowed`));
+  },
   credentials: true
 }));
 
