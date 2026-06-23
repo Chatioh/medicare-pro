@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import { getPrescriptionById } from '../../api/prescriptionApi';
 import { Prescription, PrescriptionItem } from '../../types';
 import Card from '../../components/ui/Card';
@@ -8,21 +9,66 @@ import Badge from '../../components/ui/Badge';
 import Table, { Column } from '../../components/ui/Table';
 import Spinner from '../../components/ui/Spinner';
 import PageWrapper from '../../components/layout/PageWrapper';
+import PrescriptionPrintView from '../../components/ui/PrescriptionPrintView';
 import { formatDate } from '../../utils/formatters';
-import { ArrowLeft, User, Stethoscope, Calendar, FileText, Pill, AlertCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  User,
+  Stethoscope,
+  Calendar,
+  FileText,
+  Pill,
+  AlertCircle,
+  Printer,
+  Download,
+} from 'lucide-react';
 
+/* ── Print portal helpers ─────────────────────────────────────────
+   We use a lightweight portal trick:
+   1. Mount <PrescriptionPrintView> into a dedicated #prescription-print-portal div
+      appended to <body>.
+   2. Call window.print() — the @media print CSS in index.css hides everything EXCEPT
+      that portal div, producing a clean A4 document.
+   3. Remove the portal div after the print dialog closes.
+──────────────────────────────────────────────────────────────────── */
+const PORTAL_ID = 'prescription-print-portal';
+
+function mountPrintPortal(prescription: Prescription): HTMLDivElement {
+  let portal = document.getElementById(PORTAL_ID) as HTMLDivElement | null;
+  if (!portal) {
+    portal = document.createElement('div');
+    portal.id = PORTAL_ID;
+    document.body.appendChild(portal);
+  }
+  // Inline styles so it sits off-screen before print dialog opens
+  portal.style.cssText =
+    'position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:9999;overflow:auto;display:none;';
+  ReactDOM.render(<PrescriptionPrintView prescription={prescription} />, portal);
+  return portal;
+}
+
+function unmountPrintPortal() {
+  const portal = document.getElementById(PORTAL_ID);
+  if (portal) {
+    ReactDOM.unmountComponentAtNode(portal);
+    portal.remove();
+  }
+}
+
+/* ── Component ────────────────────────────────────────────────── */
 const PrescriptionDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [prescription, setPrescription] = useState<Prescription | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [printing, setPrinting] = useState(false);
+  const printingRef = useRef(false);
 
   if (!id) {
     navigate('/prescriptions');
     return null;
   }
-
-  const [prescription, setPrescription] = useState<Prescription | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -40,6 +86,48 @@ const PrescriptionDetail = () => {
     fetch();
   }, [id]);
 
+  // Cleanup portal on unmount
+  useEffect(() => {
+    return () => {
+      unmountPrintPortal();
+    };
+  }, []);
+
+  /* ── Print / PDF handler ────────────────────────────────────── */
+  const handlePrint = () => {
+    if (!prescription || printingRef.current) return;
+    printingRef.current = true;
+    setPrinting(true);
+
+    const originalTitle = document.title;
+    document.title = `Prescription-${prescription.prescription_number}-${new Date().getTime()}`;
+
+    mountPrintPortal(prescription);
+
+    // Brief delay for React to render into the portal before print dialog
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+
+        // Clean up after dialog closes (afterprint fires when user dismisses)
+        const cleanup = () => {
+          document.title = originalTitle;
+          unmountPrintPortal();
+          printingRef.current = false;
+          setPrinting(false);
+          window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup);
+
+        // Fallback cleanup if afterprint never fires (some browsers)
+        setTimeout(() => {
+          if (printingRef.current) cleanup();
+        }, 3000);
+      });
+    });
+  };
+
+  /* ── Loading / error states ─────────────────────────────────── */
   if (loading) {
     return (
       <PageWrapper title="Prescription Details">
@@ -78,6 +166,7 @@ const PrescriptionDetail = () => {
     );
   }
 
+  /* ── Medication table columns ─────────────────────────────── */
   const columns: Column[] = [
     {
       key: 'medication_name',
@@ -85,28 +174,56 @@ const PrescriptionDetail = () => {
       render: (row) => (
         <div className="flex items-center gap-2">
           <Pill className="w-4 h-4 text-gray-400 flex-shrink-0" />
-          <span className="font-medium text-gray-900">{(row as unknown as PrescriptionItem).medication_name}</span>
+          <span className="font-medium text-gray-900">
+            {(row as unknown as PrescriptionItem).medication_name}
+          </span>
         </div>
       ),
     },
-    { key: 'dosage', header: 'Dosage', render: (row) => <span className="font-medium">{(row as unknown as PrescriptionItem).dosage}</span> },
-    { key: 'frequency', header: 'Frequency', render: (row) => <span>{(row as unknown as PrescriptionItem).frequency}</span> },
-    { key: 'duration', header: 'Duration', render: (row) => <span>{(row as unknown as PrescriptionItem).duration}</span> },
-    { key: 'quantity', header: 'Qty', render: (row) => <span>{(row as unknown as PrescriptionItem).quantity}</span> },
+    {
+      key: 'dosage',
+      header: 'Dosage',
+      render: (row) => (
+        <span className="font-medium text-blue-600">
+          {(row as unknown as PrescriptionItem).dosage}
+        </span>
+      ),
+    },
+    {
+      key: 'frequency',
+      header: 'Frequency',
+      render: (row) => <span>{(row as unknown as PrescriptionItem).frequency}</span>,
+    },
+    {
+      key: 'duration',
+      header: 'Duration',
+      render: (row) => <span>{(row as unknown as PrescriptionItem).duration}</span>,
+    },
+    {
+      key: 'quantity',
+      header: 'Qty',
+      render: (row) => (
+        <span className="font-semibold">{(row as unknown as PrescriptionItem).quantity}</span>
+      ),
+    },
     {
       key: 'instructions',
       header: 'Instructions',
       render: (row) => {
         const instr = (row as unknown as PrescriptionItem).instructions;
-        return <span className="text-gray-500">{instr || '—'}</span>;
+        return (
+          <span className={instr ? 'text-gray-700' : 'text-gray-400 italic'}>{instr || '—'}</span>
+        );
       },
     },
   ];
 
+  /* ── Render ─────────────────────────────────────────────────── */
   return (
     <PageWrapper title={`Prescription ${prescription.prescription_number}`}>
       <div className="p-6">
         <div className="max-w-5xl mx-auto space-y-6">
+          {/* Back nav */}
           <button
             onClick={() => navigate('/prescriptions')}
             className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
@@ -115,13 +232,46 @@ const PrescriptionDetail = () => {
             Back to Prescriptions
           </button>
 
-          <div className="flex items-center justify-between gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-lg text-blue-600 font-bold">{prescription.prescription_number}</span>
+          {/* ── Header action bar ─────────────────────────────── */}
+          <div className="flex items-center justify-between gap-4 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="font-mono text-lg text-blue-600 font-bold truncate">
+                {prescription.prescription_number}
+              </span>
               <Badge status={prescription.status} />
+            </div>
+
+            {/* Print / Export PDF buttons */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Print — opens the browser print dialog */}
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handlePrint}
+                loading={printing}
+                disabled={printing}
+                title="Print prescription"
+              >
+                <Printer className="w-4 h-4 mr-1.5" />
+                Print
+              </Button>
+
+              {/* Export PDF — same action; browsers save-as-PDF from the print dialog */}
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handlePrint}
+                loading={printing}
+                disabled={printing}
+                title="Save as PDF — choose 'Save as PDF' in the print dialog"
+              >
+                <Download className="w-4 h-4 mr-1.5" />
+                Export PDF
+              </Button>
             </div>
           </div>
 
+          {/* ── Info cards ────────────────────────────────────── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card title="Prescription Information">
               <div className="space-y-0">
@@ -141,6 +291,15 @@ const PrescriptionDetail = () => {
                   </div>
                   <span className="text-sm font-medium text-gray-900">
                     {prescription.doctor?.user?.full_name || '—'}
+                  </span>
+                </div>
+                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                  <div className="flex items-center gap-2">
+                    <Stethoscope className="w-4 h-4 text-gray-400" />
+                    <span className="text-sm text-gray-500">License No.</span>
+                  </div>
+                  <span className="text-sm font-mono font-medium text-gray-900">
+                    {prescription.doctor?.license_number || '—'}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5 border-b border-gray-50">
@@ -183,18 +342,29 @@ const PrescriptionDetail = () => {
                   <Badge status={prescription.status} />
                 </div>
                 <div className="py-2.5">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">Notes</span>
+                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                    Notes
+                  </span>
                   <p className="text-sm text-gray-700">
-                    {prescription.notes?.trim() ? prescription.notes : <span className="text-gray-400 italic">No notes added</span>}
+                    {prescription.notes?.trim() ? (
+                      prescription.notes
+                    ) : (
+                      <span className="text-gray-400 italic">No notes added</span>
+                    )}
                   </p>
                 </div>
               </div>
             </Card>
           </div>
 
-          <Card title="Medications">
+          {/* ── Medications ───────────────────────────────────── */}
+          <Card title={`Medications (${prescription.items?.length ?? 0})`}>
             {prescription.items && prescription.items.length > 0 ? (
-              <Table columns={columns} data={prescription.items as unknown as Record<string, any>[]} loading={false} />
+              <Table
+                columns={columns}
+                data={prescription.items as unknown as Record<string, any>[]}
+                loading={false}
+              />
             ) : (
               <p className="text-gray-400 text-sm py-4 text-center">No medication items found.</p>
             )}

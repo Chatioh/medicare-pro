@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import { getPrescriptions, dispensePrescription, cancelPrescription } from '../../api/prescriptionApi';
 import { Prescription } from '../../types';
 import Button from '../../components/ui/Button';
@@ -8,9 +9,34 @@ import Badge from '../../components/ui/Badge';
 import Spinner from '../../components/ui/Spinner';
 import PageWrapper from '../../components/layout/PageWrapper';
 import Modal from '../../components/ui/Modal';
+import PrescriptionPrintView from '../../components/ui/PrescriptionPrintView';
 import { formatDate } from '../../utils/formatters';
 import { useAuth } from '../../hooks/useAuth';
-import { PlusCircle, Eye, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { PlusCircle, Eye, CheckCircle, XCircle, AlertTriangle, Printer } from 'lucide-react';
+
+const PORTAL_ID = 'prescription-print-portal';
+
+function printPrescription(prescription: Prescription) {
+  let portal = document.getElementById(PORTAL_ID) as HTMLDivElement | null;
+  if (!portal) {
+    portal = document.createElement('div');
+    portal.id = PORTAL_ID;
+    document.body.appendChild(portal);
+  }
+  ReactDOM.render(<PrescriptionPrintView prescription={prescription} />, portal);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.print();
+      const cleanup = () => {
+        const el = document.getElementById(PORTAL_ID);
+        if (el) { ReactDOM.unmountComponentAtNode(el); el.remove(); }
+        window.removeEventListener('afterprint', cleanup);
+      };
+      window.addEventListener('afterprint', cleanup);
+      setTimeout(() => { const el = document.getElementById(PORTAL_ID); if (el) cleanup(); }, 3000);
+    });
+  });
+}
 
 const STATUSES = ['', 'issued', 'dispensed', 'expired', 'cancelled'];
 
@@ -144,6 +170,14 @@ const PrescriptionList = () => {
           <Button size="sm" variant="ghost" onClick={() => navigate(`/prescriptions/${row.id as string}`)}>
             <Eye className="w-4 h-4 mr-1" />
             View
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            title="Print prescription"
+            onClick={() => printPrescription(row as unknown as Prescription)}
+          >
+            <Printer className="w-4 h-4" />
           </Button>
           {(row.status as string) === 'issued' && hasRole('admin', 'nurse') && (
             <Button size="sm" variant="success" onClick={() => handleDispense(row.id as string)}>

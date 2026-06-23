@@ -1,8 +1,10 @@
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactDOM from 'react-dom';
 import { getPatientById, getMedicalHistory, updateMedicalHistory } from '../../api/patientApi';
 import { getAppointments } from '../../api/appointmentApi';
-import { Patient, MedicalHistory, Appointment } from '../../types';
+import { getPrescriptions } from '../../api/prescriptionApi';
+import { Patient, MedicalHistory, Appointment, Prescription } from '../../types';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
@@ -10,8 +12,47 @@ import Modal from '../../components/ui/Modal';
 import Spinner from '../../components/ui/Spinner';
 import Table, { Column } from '../../components/ui/Table';
 import PageWrapper from '../../components/layout/PageWrapper';
+import PatientReportPrintView from '../../components/ui/PatientReportPrintView';
 import { formatDate, formatTime, calculateAge } from '../../utils/formatters';
-import { ArrowLeft, Edit, Calendar, Phone, Mail, MapPin, User, Heart, AlertCircle, Pill } from 'lucide-react';
+import { ArrowLeft, Edit, Calendar, Phone, Mail, MapPin, User, Heart, AlertCircle, Pill, Printer, Download } from 'lucide-react';
+
+/* ── Print portal helpers ───────────────────────────────────────── */
+const PORTAL_ID = 'prescription-print-portal';
+
+function mountPrintPortal(
+  patient: Patient,
+  history: MedicalHistory | null,
+  appointments: Appointment[],
+  prescriptions: Prescription[]
+): HTMLDivElement {
+  let portal = document.getElementById(PORTAL_ID) as HTMLDivElement | null;
+  if (!portal) {
+    portal = document.createElement('div');
+    portal.id = PORTAL_ID;
+    document.body.appendChild(portal);
+  }
+  portal.style.cssText =
+    'position:fixed;top:0;left:0;width:100%;height:100%;background:white;z-index:9999;overflow:auto;display:none;';
+  ReactDOM.render(
+    <PatientReportPrintView
+      patient={patient}
+      history={history}
+      appointments={appointments}
+      prescriptions={prescriptions}
+    />,
+    portal
+  );
+  return portal;
+}
+
+function unmountPrintPortal() {
+  const portal = document.getElementById(PORTAL_ID);
+  if (portal) {
+    ReactDOM.unmountComponentAtNode(portal);
+    portal.remove();
+  }
+}
+
 
 const historyFields: { label: string; key: keyof MedicalHistory }[] = [
   { label: 'Chronic Conditions', key: 'chronic_conditions' },
@@ -28,6 +69,7 @@ const PatientDetail = () => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [history, setHistory] = useState<MedicalHistory | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
   const [loading, setLoading] = useState(true);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [historyForm, setHistoryForm] = useState({
@@ -39,16 +81,57 @@ const PatientDetail = () => {
     notes: '',
   });
   const [savingHistory, setSavingHistory] = useState(false);
+  const [printing, setPrinting] = useState(false);
+  const printingRef = useRef(false);
+
+  // Cleanup portal on unmount
+  useEffect(() => {
+    return () => {
+      unmountPrintPortal();
+    };
+  }, []);
+
+  const handlePrint = () => {
+    if (!patient || printingRef.current) return;
+    printingRef.current = true;
+    setPrinting(true);
+
+    const originalTitle = document.title;
+    document.title = `Medical-Report-${patient.patient_number}-${new Date().getTime()}`;
+
+    mountPrintPortal(patient, history, appointments, prescriptions);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+
+        const cleanup = () => {
+          document.title = originalTitle;
+          unmountPrintPortal();
+          printingRef.current = false;
+          setPrinting(false);
+          window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup);
+
+        setTimeout(() => {
+          if (printingRef.current) cleanup();
+        }, 3000);
+      });
+    });
+  };
+
 
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [patientRes, historyRes, appointmentsRes] = await Promise.all([
+        const [patientRes, historyRes, appointmentsRes, prescriptionsRes] = await Promise.all([
           getPatientById(id),
           getMedicalHistory(id).catch(() => null),
           getAppointments({ patient_id: id }),
+          getPrescriptions({ patient_id: id }).catch(() => null),
         ]);
         const patient = patientRes?.data?.patient ?? (patientRes as any)?.patient;
         setPatient(patient ?? null);
@@ -66,6 +149,22 @@ const PatientDetail = () => {
         }
         const appts = (appointmentsRes?.data as any)?.appointments ?? appointmentsRes?.data?.rows ?? appointmentsRes?.data ?? appointmentsRes ?? [];
         setAppointments(Array.isArray(appts) ? appts : []);
+
+        let rxList = [];
+        if (prescriptionsRes) {
+          if ((prescriptionsRes?.data as any)?.prescriptions) {
+            rxList = (prescriptionsRes.data as any).prescriptions;
+          } else if (prescriptionsRes?.data?.rows) {
+            rxList = prescriptionsRes.data.rows;
+          } else if ((prescriptionsRes as any)?.rows) {
+            rxList = (prescriptionsRes as any).rows;
+          } else if (Array.isArray(prescriptionsRes?.data)) {
+            rxList = prescriptionsRes.data;
+          } else if (Array.isArray(prescriptionsRes)) {
+            rxList = prescriptionsRes;
+          }
+        }
+        setPrescriptions(rxList);
       } catch {
         // handled below via patient check
       } finally {
@@ -206,27 +305,55 @@ const PatientDetail = () => {
             Back to Patients
           </button>
 
-          <div className="flex items-center gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
-              {initials}
-            </div>
-            <div className="space-y-1">
-              <h1 className="text-xl font-bold text-gray-900">{patient.full_name}</h1>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${genderBadgeColor}`}>
-                  {patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}
-                </span>
-                {patient.blood_group && (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
-                    {patient.blood_group}
-                  </span>
-                )}
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                  {calculateAge(patient.date_of_birth)} years
-                </span>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                {initials}
               </div>
-              <p className="text-sm text-gray-500 font-mono">{patient.patient_number}</p>
-              <p className="text-sm text-gray-400">Registered on {formatDate((patient as any).createdAt)}</p>
+              <div className="space-y-1">
+                <h1 className="text-xl font-bold text-gray-900">{patient.full_name}</h1>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${genderBadgeColor}`}>
+                    {patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}
+                  </span>
+                  {patient.blood_group && (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                      {patient.blood_group}
+                    </span>
+                  )}
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    {calculateAge(patient.date_of_birth)} years
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 font-mono">{patient.patient_number}</p>
+                <p className="text-sm text-gray-400">Registered on {formatDate((patient as any).createdAt)}</p>
+              </div>
+            </div>
+
+            {/* Export / Print Buttons */}
+            <div className="flex items-center gap-2 flex-shrink-0 self-start md:self-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handlePrint}
+                loading={printing}
+                disabled={printing}
+                title="Print medical report"
+              >
+                <Printer className="w-4 h-4 mr-1.5" />
+                Print Report
+              </Button>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={handlePrint}
+                loading={printing}
+                disabled={printing}
+                title="Save report as PDF"
+              >
+                <Download className="w-4 h-4 mr-1.5" />
+                Export PDF
+              </Button>
             </div>
           </div>
 

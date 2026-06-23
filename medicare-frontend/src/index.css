@@ -33,3 +33,58 @@
 * {
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
+
+/* ── Print / PDF styles ─────────────────────────────────────────── */
+@media print {
+  /* Reset document heights/overflows to allow natural multi-page pagination */
+  html, body, #root {
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    position: static !important;
+  }
+
+  /* Hide everything by default */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only the print portal */
+  #prescription-print-portal {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: white;
+    overflow: visible;
+  }
+
+  #prescription-print-portal * {
+    display: revert !important;
+  }
+
+  /* Remove page margins in print dialog */
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  /* Prevent element breaks mid-medication row */
+  .prescription-print-root table tr {
+    page-break-inside: avoid;
+  }
+
+  /* Prevent blocks from splitting mid-page */
+  .prescription-print-root > div {
+    page-break-inside: avoid;
+  }
+
+  /* Kill all transitions when printing */
+  * {
+    transition: none !important;
+    animation: none !important;
+    box-shadow: none !important;
+  }
+}

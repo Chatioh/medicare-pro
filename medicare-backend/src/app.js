@@ -31,9 +31,9 @@ app.use(cors({
     if (!origin) return callback(null, true);
     // Allow any explicitly listed origin
     if (allowedOrigins.includes(origin)) return callback(null, true);
-    // In development, allow any LAN/localhost origin on port 3000
+    // In development, allow any LAN/localhost origin on ports 3000-3010
     if (process.env.NODE_ENV !== 'production') {
-      const devPattern = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):3000$/;
+      const devPattern = /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+):(300\d|3010)$/;
       if (devPattern.test(origin)) return callback(null, true);
     }
     callback(new Error(`CORS: origin '${origin}' not allowed`));
