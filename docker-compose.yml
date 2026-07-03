@@ -6,7 +6,6 @@
 #   Prod: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 # ============================================================
 
-version: '3.8'
 
 services:
 
@@ -24,7 +23,6 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - ./medicare-backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     networks:
       - medicare_network
     healthcheck:
@@ -33,7 +31,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-      start_period: 30s
+      start_period: 60s
 
   # ── Node.js / Express Backend ───────────────────────────────
   backend:
