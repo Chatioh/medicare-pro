@@ -124,14 +124,14 @@ const PrescriptionList = () => {
     {
       key: 'prescription_number',
       header: 'Prescription No.',
-      render: (row) => <span className="font-mono text-sm text-blue-600">{row.prescription_number as string}</span>,
+      render: (row) => <span className="font-mono text-sm text-blue-600 dark:text-blue-400">{row.prescription_number as string}</span>,
     },
     {
       key: 'patient',
       header: 'Patient',
       render: (row) => {
         const p = row as unknown as Prescription;
-        return <span className="font-medium text-gray-900">{p.patient?.full_name || '—'}</span>;
+        return <span className="font-medium text-gray-900 dark:text-gray-100">{p.patient?.full_name || '—'}</span>;
       },
     },
     {
@@ -214,11 +214,11 @@ const PrescriptionList = () => {
 
           <div className="flex gap-3 flex-wrap mb-4 items-end">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
               <select
                 value={statusFilter}
                 onChange={(e: ChangeEvent<HTMLSelectElement>) => setStatusFilter(e.target.value)}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -230,7 +230,7 @@ const PrescriptionList = () => {
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
@@ -265,14 +265,14 @@ const PrescriptionList = () => {
           <p className="text-center text-sm text-gray-700 mb-4">
             Patient: <span className="font-medium">{prescriptionToCancel?.patient?.full_name}</span>
           </p>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-            <p className="text-xs text-amber-700 text-center">
+          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-4">
+            <p className="text-xs text-amber-700 dark:text-amber-400 text-center">
               ⚠️ This action cannot be undone. The prescription will be permanently marked as cancelled.
               If needed, a new prescription must be issued.
             </p>
           </div>
           {cancelError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 text-center">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400 text-center">
               {cancelError}
             </div>
           )}

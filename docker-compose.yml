@@ -1,0 +1,104 @@
+# ============================================================
+# MediCare Pro — Docker Compose
+# Services: db (MySQL 8) + backend (Node/Express) + frontend (Nginx)
+# Usage:
+#   Dev:  docker-compose up --build
+#   Prod: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ============================================================
+
+version: '3.8'
+
+services:
+
+  # ── MySQL 8.0 Database ──────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: medicare_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE:      ${DB_NAME:-medicare_pro}
+      MYSQL_USER:          ${DB_USER:-medicare_user}
+      MYSQL_PASSWORD:      ${DB_PASS:-medicare_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./medicare-backend/scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - medicare_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost",
+             "-u", "root", "--password=${DB_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Node.js / Express Backend ───────────────────────────────
+  backend:
+    build:
+      context: ./medicare-backend
+      dockerfile: Dockerfile
+      target: production
+    container_name: medicare_backend
+    restart: unless-stopped
+    env_file:
+      - ./medicare-backend/.env.docker
+    environment:
+      NODE_ENV:    ${NODE_ENV:-development}
+      PORT:        5000
+      DB_HOST:     db          # <-- service name, not localhost
+      DB_PORT:     3306
+      DB_NAME:     ${DB_NAME:-medicare_pro}
+      DB_USER:     ${DB_USER:-medicare_user}
+      DB_PASS:     ${DB_PASS:-medicare_pass}
+    ports:
+      - "5000:5000"
+    volumes:
+      # Dev only: mount source for live reload (remove in prod)
+      - ./medicare-backend/src:/usr/src/app/src:ro
+      - ./medicare-backend/server.js:/usr/src/app/server.js:ro
+    depends_on:
+      db:
+        condition: service_healthy   # Wait for MySQL health check to pass
+    networks:
+      - medicare_network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # ── React Frontend (Nginx) ──────────────────────────────────
+  frontend:
+    build:
+      context: ./medicare-frontend
+      dockerfile: Dockerfile
+      target: production
+    container_name: medicare_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - medicare_network
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+# ── Named volumes ─────────────────────────────────────────────
+volumes:
+  db_data:
+    driver: local
+
+# ── Networks ──────────────────────────────────────────────────
+networks:
+  medicare_network:
+    driver: bridge

@@ -299,19 +299,19 @@ const PatientDetail = () => {
         <div className="max-w-5xl mx-auto space-y-6">
           <button
             onClick={() => navigate('/patients')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Patients
           </button>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-6">
               <div className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
                 {initials}
               </div>
               <div className="space-y-1">
-                <h1 className="text-xl font-bold text-gray-900">{patient.full_name}</h1>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{patient.full_name}</h1>
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${genderBadgeColor}`}>
                     {patient.gender.charAt(0).toUpperCase() + patient.gender.slice(1)}
@@ -325,8 +325,8 @@ const PatientDetail = () => {
                     {calculateAge(patient.date_of_birth)} years
                   </span>
                 </div>
-                <p className="text-sm text-gray-500 font-mono">{patient.patient_number}</p>
-                <p className="text-sm text-gray-400">Registered on {formatDate((patient as any).createdAt)}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-mono">{patient.patient_number}</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500">Registered on {formatDate((patient as any).createdAt)}</p>
               </div>
             </div>
 
@@ -360,63 +360,63 @@ const PatientDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card title="Patient Information">
               <div className="space-y-0">
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Date of Birth</span>
+                    <User className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Date of Birth</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {formatDate(patient.date_of_birth)} ({calculateAge(patient.date_of_birth)} years)
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Gender</span>
+                    <User className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Gender</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 capitalize">{patient.gender}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">{patient.gender}</span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Phone</span>
+                    <Phone className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Phone</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{patient.phone}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{patient.phone}</span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Email</span>
+                    <Mail className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Email</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{patient.email || 'Not provided'}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{patient.email || 'Not provided'}</span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Address</span>
+                    <MapPin className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Address</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{patient.address || 'Not provided'}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{patient.address || 'Not provided'}</span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Heart className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Blood Group</span>
+                    <Heart className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Blood Group</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{patient.blood_group || 'Not recorded'}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{patient.blood_group || 'Not recorded'}</span>
                 </div>
                 <div className="flex justify-between py-2.5">
                   <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Emergency Contact</span>
+                    <AlertCircle className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Emergency Contact</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {patient.emergency_contact_name
                       ? `${patient.emergency_contact_name} · ${patient.emergency_contact_phone || ''}`
                       : 'Not provided'}
                   </span>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button variant="secondary" onClick={() => navigate(`/patients/${patient.id}/edit`)} className="w-full">
                   Edit Patient
                 </Button>
@@ -435,10 +435,10 @@ const PatientDetail = () => {
                 {historyFields.map(({ label, key }) => {
                   const value = (history as Record<string, string | undefined> | null)?.[key];
                   return (
-                    <div key={key} className="border-b border-gray-100 pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0">
-                      <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{label}</span>
-                      <p className="text-sm text-gray-700 mt-1">
-                        {value?.trim() ? value : <span className="text-gray-400 italic">None recorded</span>}
+                    <div key={key} className="border-b border-gray-100 dark:border-gray-700/50 pb-3 mb-3 last:border-b-0 last:pb-0 last:mb-0">
+                      <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{label}</span>
+                      <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+                        {value?.trim() ? value : <span className="text-gray-400 dark:text-gray-500 italic">None recorded</span>}
                       </p>
                     </div>
                   );
@@ -472,19 +472,19 @@ const PatientDetail = () => {
             <div className="space-y-4">
               {historyFields.map(({ label, key }) => (
                 <div key={key}>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
                   <textarea
                     name={key}
                     value={historyForm[key as keyof typeof historyForm]}
                     onChange={handleHistoryChange}
                     rows={3}
-                    className="block w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
+                    className="block w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none"
                     placeholder={`Enter ${label.toLowerCase()}`}
                   />
                 </div>
               ))}
               {/* Sticky action row pinned to the bottom of the scrollable area */}
-              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 sticky bottom-0 bg-white pb-1">
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700 sticky bottom-0 bg-white dark:bg-gray-800 pb-1">
                 <Button variant="secondary" onClick={() => setHistoryModalOpen(false)}>
                   Cancel
                 </Button>

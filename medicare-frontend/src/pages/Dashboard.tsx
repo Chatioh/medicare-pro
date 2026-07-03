@@ -52,11 +52,11 @@ const Dashboard = () => {
     <PageWrapper title="Dashboard">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {statCards.map((card) => (
-          <div key={card.label} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 relative overflow-hidden">
+          <div key={card.label} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 relative overflow-hidden">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm text-gray-500 font-medium">{card.label}</p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">{card.value}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">{card.label}</p>
+                <p className="mt-2 text-3xl font-bold text-gray-900 dark:text-gray-100">{card.value}</p>
               </div>
               <div className={`p-3 rounded-lg ${card.color}`}>
                 <card.icon className="w-5 h-5" />
@@ -69,14 +69,14 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card title="Today's Appointments">
           {todayAppts.length === 0 ? (
-            <p className="text-gray-400 text-sm py-4 text-center">No appointments today.</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm py-4 text-center">No appointments today.</p>
           ) : (
             <div className="space-y-3">
               {todayAppts.slice(0, 6).map((apt) => (
-                <div key={apt.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                <div key={apt.id} className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{apt.patient?.full_name || '—'}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{apt.patient?.full_name || '—'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                       {apt.start_time} — {apt.end_time}
                     </p>
                   </div>
@@ -89,19 +89,19 @@ const Dashboard = () => {
 
         <Card title="Recent Patients">
           {recentPatients.length === 0 ? (
-            <p className="text-gray-400 text-sm py-4 text-center">No patients registered yet.</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm py-4 text-center">No patients registered yet.</p>
           ) : (
             <div className="space-y-3">
               {recentPatients.map((p) => (
-                <div key={p.id} className="flex items-center gap-3 py-2 border-b border-gray-50 last:border-0">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                <div key={p.id} className="flex items-center gap-3 py-2 border-b border-gray-50 dark:border-gray-700/50 last:border-0">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xs font-semibold flex-shrink-0">
                     {p.full_name.charAt(0).toUpperCase()}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">{p.full_name}</p>
-                    <p className="text-xs text-gray-500">{p.patient_number}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{p.full_name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{p.patient_number}</p>
                   </div>
-                  <Activity className="w-4 h-4 text-gray-300" />
+                  <Activity className="w-4 h-4 text-gray-300 dark:text-gray-600" />
                 </div>
               ))}
             </div>

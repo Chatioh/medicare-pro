@@ -99,12 +99,12 @@ const PatientList = () => {
 
   const genderBadge = (gender: string) => {
     const colorMap: Record<string, string> = {
-      male: 'bg-blue-100 text-blue-700',
-      female: 'bg-pink-100 text-pink-700',
-      other: 'bg-gray-100 text-gray-600',
+      male: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+      female: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
+      other: 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
     };
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorMap[gender] || 'bg-gray-100 text-gray-600'}`}>
+      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorMap[gender] || 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}`}>
         {gender.charAt(0).toUpperCase() + gender.slice(1)}
       </span>
     );
@@ -114,15 +114,15 @@ const PatientList = () => {
     {
       key: 'patient_number',
       header: 'Patient No.',
-      render: (row) => <span className="font-mono text-sm text-blue-600">{row.patient_number as string}</span>,
+      render: (row) => <span className="font-mono text-sm text-blue-600 dark:text-blue-400">{row.patient_number as string}</span>,
     },
     {
       key: 'full_name',
       header: 'Full Name',
       render: (row) => (
         <div>
-          <span className="font-medium text-gray-900">{row.full_name as string}</span>
-          <div className="text-xs text-gray-400">{formatDate((row as any).createdAt)}</div>
+          <span className="font-medium text-gray-900 dark:text-gray-100">{row.full_name as string}</span>
+          <div className="text-xs text-gray-400 dark:text-gray-500">{formatDate((row as any).createdAt)}</div>
         </div>
       ),
     },
@@ -189,7 +189,7 @@ const PatientList = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
             <input
               type="text"
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Search by name, phone or patient number..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -197,13 +197,13 @@ const PatientList = () => {
           </div>
 
           {!loading && total > 0 && (
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Showing {Math.min(page * limit, total)} of {total} patients
             </p>
           )}
 
           {error && (
-            <div className="mb-4 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
@@ -221,7 +221,7 @@ const PatientList = () => {
 
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-6">
-              <span className="text-sm text-gray-500">Page {page} of {totalPages}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Page {page} of {totalPages}</span>
               <div className="flex gap-2">
                 <Button
                   variant="secondary"
@@ -263,7 +263,7 @@ const PatientList = () => {
             ⚠️ This will also delete all their appointments, prescriptions and medical history. This action cannot be undone.
           </p>
           {deleteError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
               {deleteError}
             </div>
           )}

@@ -1,0 +1,34 @@
+# ============================================================
+# MediCare Pro Frontend — .dockerignore
+# ============================================================
+
+# Dependencies (installed fresh inside container)
+node_modules/
+npm-debug.log*
+
+# Build output (generated inside container)
+dist/
+build/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dev tools
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# Version control
+.git/
+.gitignore
+
+# Documentation
+README.md
+
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

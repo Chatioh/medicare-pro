@@ -155,22 +155,22 @@ const PrescriptionForm = () => {
 
           <Card>
             {submitError && (
-              <div className="mb-6 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+              <div className="mb-6 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
                 {submitError}
               </div>
             )}
 
             <div className="space-y-5">
-              <p className="text-lg font-semibold text-gray-700 mb-4">Prescription Details</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Prescription Details</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Patient *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Patient *</label>
                   <select
                     name="patient_id"
                     value={formData.patient_id}
                     onChange={handleFormChange}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select patient</option>
                     {(patients ?? []).map((p) => (
@@ -181,12 +181,12 @@ const PrescriptionForm = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Doctor *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Doctor *</label>
                   <select
                     name="doctor_id"
                     value={formData.doctor_id}
                     onChange={handleFormChange}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select doctor</option>
                     {(doctors ?? []).map((d) => (
@@ -205,20 +205,20 @@ const PrescriptionForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
                 <textarea
                   name="notes"
                   value={formData.notes}
                   onChange={handleFormChange}
                   rows={2}
-                  className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Additional notes..."
                 />
               </div>
 
-              <div className="border-t border-gray-100 pt-4">
+              <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-lg font-semibold text-gray-700">Medications</p>
+                  <p className="text-lg font-semibold text-gray-700 dark:text-gray-300">Medications</p>
                   <Button size="sm" variant="secondary" onClick={addItem}>
                     <PlusCircle className="w-4 h-4 mr-1" />
                     Add Medication
@@ -226,9 +226,9 @@ const PrescriptionForm = () => {
                 </div>
 
                 {(items ?? []).map((item, index) => (
-                  <div key={index} className="p-4 mb-4 border border-gray-200 rounded-lg bg-gray-50">
+                  <div key={index} className="p-4 mb-4 border border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700/50">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm font-medium text-gray-700">Medication #{index + 1}</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Medication #{index + 1}</span>
                       {items.length > 1 && (
                         <button
                           type="button"
@@ -282,7 +282,7 @@ const PrescriptionForm = () => {
                 ))}
               </div>
 
-              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button variant="secondary" onClick={() => navigate('/prescriptions')}>Cancel</Button>
                 <Button variant="primary" type="button" onClick={handleSubmit} loading={submitting}>
                   <PlusCircle className="w-4 h-4 mr-1" />

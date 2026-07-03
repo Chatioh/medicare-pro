@@ -42,7 +42,7 @@ PrescriptionItem.belongsTo(Prescription, { foreignKey: 'prescription_id', as: 'p
 // ─── Sync all models to database ───────────────────────────
 const syncDatabase = async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Failed to sync database:', error);

@@ -67,11 +67,11 @@ const StaffList = () => {
 
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-purple-100 text-purple-700';
-      case 'doctor': return 'bg-blue-100 text-blue-700';
-      case 'nurse': return 'bg-green-100 text-green-700';
-      case 'receptionist': return 'bg-orange-100 text-orange-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'admin': return 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300';
+      case 'doctor': return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300';
+      case 'nurse': return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
+      case 'receptionist': return 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300';
+      default: return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
     }
   };
 
@@ -142,15 +142,15 @@ const StaffList = () => {
       header: 'Name',
       render: (row) => (
         <div>
-          <span className="font-medium text-gray-900">{row.full_name as string}</span>
-          <div className="text-xs text-gray-400">{formatDate((row as any).createdAt)}</div>
+          <span className="font-medium text-gray-900 dark:text-gray-100">{row.full_name as string}</span>
+          <div className="text-xs text-gray-400 dark:text-gray-500">{formatDate((row as any).createdAt)}</div>
         </div>
       ),
     },
     {
       key: 'email',
       header: 'Email',
-      render: (row) => <span className="text-gray-500">{row.email as string}</span>,
+      render: (row) => <span className="text-gray-500 dark:text-gray-400">{row.email as string}</span>,
     },
     {
       key: 'role',
@@ -167,7 +167,7 @@ const StaffList = () => {
       render: (row) => {
         const active = row.is_active as boolean;
         return (
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${active ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
             {active ? 'Active' : 'Inactive'}
           </span>
         );
@@ -223,11 +223,11 @@ const StaffList = () => {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {['admin', 'doctor', 'nurse', 'receptionist'].map((role) => (
-              <div key={role} className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 text-center">
-                <div className="text-2xl font-bold text-gray-900">
+              <div key={role} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-4 text-center">
+                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   {(staff ?? []).filter((s) => s.role === role).length}
                 </div>
-                <div className="text-sm text-gray-500 capitalize mt-1">{role}s</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 capitalize mt-1">{role}s</div>
               </div>
             ))}
           </div>
@@ -237,7 +237,7 @@ const StaffList = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
               <input
                 type="text"
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 placeholder="Search by name or email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -247,7 +247,7 @@ const StaffList = () => {
               <select
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
-                className="rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Roles</option>
                 <option value="admin">Admin</option>
@@ -259,7 +259,7 @@ const StaffList = () => {
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
@@ -303,11 +303,11 @@ const StaffList = () => {
             placeholder="Minimum 8 characters"
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role *</label>
             <select
               value={addForm.role}
               onChange={(e) => setAddForm({ ...addForm, role: e.target.value })}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="receptionist">Receptionist</option>
               <option value="nurse">Nurse</option>
@@ -316,7 +316,7 @@ const StaffList = () => {
             {addErrors.role && <p className="text-red-500 text-xs mt-1">{addErrors.role}</p>}
           </div>
           {addError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+            <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
               {addError}
             </div>
           )}
@@ -363,11 +363,11 @@ const StaffList = () => {
 
       <Modal isOpen={resetModalOpen} onClose={() => setResetModalOpen(false)} title="Reset Password">
         <div className="p-6 space-y-4">
-          <p className="text-sm text-gray-600">
-            Reset password for <span className="font-semibold text-gray-900">{staffToReset?.full_name}</span>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Reset password for <span className="font-semibold text-gray-900 dark:text-gray-100">{staffToReset?.full_name}</span>
           </p>
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-            <p className="text-xs text-amber-700">
+          <div className="bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+            <p className="text-xs text-amber-700 dark:text-amber-400">
               ⚠️ Make sure to share the new password with the staff member securely after resetting.
             </p>
           </div>
@@ -379,7 +379,7 @@ const StaffList = () => {
             placeholder="Minimum 8 characters"
           />
           {resetError && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+            <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
               {resetError}
             </div>
           )}

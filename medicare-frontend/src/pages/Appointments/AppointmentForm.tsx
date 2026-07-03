@@ -212,22 +212,22 @@ const AppointmentForm = () => {
 
           <Card>
             {submitError && (
-              <div className="mb-6 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+              <div className="mb-6 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
                 {submitError}
               </div>
             )}
 
             <div className="space-y-5">
-              <p className="text-lg font-semibold text-gray-700 mb-4">Appointment Details</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Appointment Details</p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Patient *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Patient *</label>
                   <select
                     name="patient_id"
                     value={formData.patient_id}
                     onChange={handleChange}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select patient</option>
                     {(patients ?? []).map((p) => (
@@ -239,12 +239,12 @@ const AppointmentForm = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Doctor *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Doctor *</label>
                   <select
                     name="doctor_id"
                     value={formData.doctor_id}
                     onChange={handleChange}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select doctor</option>
                     {(doctors ?? []).map((d) => (
@@ -284,8 +284,8 @@ const AppointmentForm = () => {
               {conflictMsg && (
                 <div className={`px-4 py-3 rounded-lg text-sm border ${
                   conflictMsg.available
-                    ? 'bg-green-50 text-green-700 border-green-200'
-                    : 'bg-red-50 text-red-700 border-red-200'
+                    ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800'
+                    : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800'
                 }`}>
                   {conflictMsg.available ? '✓ ' : '✗ '}{conflictMsg.message}
                 </div>
@@ -293,12 +293,12 @@ const AppointmentForm = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type *</label>
                   <select
                     name="type"
                     value={formData.type}
                     onChange={handleChange}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">Select type</option>
                     {APPOINTMENT_TYPES.map((t) => (
@@ -311,18 +311,18 @@ const AppointmentForm = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Reason *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reason *</label>
                 <textarea
                   name="reason"
                   value={formData.reason}
                   onChange={handleChange}
                   rows={3}
-                  className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Describe the reason for the appointment..."
                 />
               </div>
 
-              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button variant="secondary" onClick={() => navigate('/appointments')}>Cancel</Button>
                 <Button variant="primary" type="button" onClick={handleSubmit} loading={submitting}>
                   {isEditMode ? 'Update Appointment' : 'Book Appointment'}

@@ -120,15 +120,15 @@ const AppointmentDetail = () => {
         <div className="max-w-5xl mx-auto space-y-6">
           <button
             onClick={() => navigate('/appointments')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Appointments
           </button>
 
-          <div className="flex items-center justify-between gap-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between gap-6 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-4">
-              <span className="font-mono text-lg text-blue-600 font-bold">{appointment.appointment_number}</span>
+              <span className="font-mono text-lg text-blue-600 dark:text-blue-400 font-bold">{appointment.appointment_number}</span>
               <Badge status={appointment.status} />
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 capitalize">
                 {appointment.type.replace(/_/g, ' ')}
@@ -151,65 +151,65 @@ const AppointmentDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card title="Appointment Details">
               <div className="space-y-0">
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Patient</span>
+                    <User className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Patient</span>
                   </div>
                   <button
                     onClick={() => navigate(`/patients/${appointment.patient_id}`)}
-                    className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                    className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                   >
                     {appointment.patient?.full_name || '—'} ({appointment.patient?.patient_number || ''})
                   </button>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Stethoscope className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Doctor</span>
+                    <Stethoscope className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Doctor</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {appointment.doctor?.user?.full_name || '—'} ({appointment.doctor?.specialization || ''})
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Date</span>
+                    <Calendar className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Date</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{formatDate(appointment.appointment_date)}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{formatDate(appointment.appointment_date)}</span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Time</span>
+                    <Clock className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Time</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {formatTime(appointment.start_time)} — {formatTime(appointment.end_time)}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Type</span>
+                    <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Type</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 capitalize">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100 capitalize">
                     {appointment.type.replace(/_/g, ' ')}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Reason</span>
+                    <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Reason</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{appointment.reason || '—'}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{appointment.reason || '—'}</span>
                 </div>
                 <div className="flex justify-between py-2.5">
                   <div className="flex items-center gap-2">
-                    <Edit className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Notes</span>
+                    <Edit className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Notes</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">{appointment.notes || 'No notes added'}</span>
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{appointment.notes || 'No notes added'}</span>
                 </div>
               </div>
             </Card>
@@ -217,12 +217,12 @@ const AppointmentDetail = () => {
             <Card title="Actions">
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Update Status</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Update Status</label>
                   <div className="flex gap-2">
                     <select
                       value={newStatus}
                       onChange={(e) => setNewStatus(e.target.value)}
-                      className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="">Select status</option>
                       {STATUS_OPTIONS.map((s) => (
@@ -238,12 +238,12 @@ const AppointmentDetail = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Add Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Add Notes</label>
                   <textarea
                     value={newNotes}
                     onChange={(e) => setNewNotes(e.target.value)}
                     rows={3}
-                    className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
+                    className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-2"
                     placeholder="Add appointment notes..."
                   />
                   <Button size="sm" variant="secondary" onClick={handleNotesSave} loading={savingNotes}>
@@ -252,7 +252,7 @@ const AppointmentDetail = () => {
                 </div>
 
                 {showPrescriptionButton && (
-                  <div className="pt-4 border-t border-gray-100">
+                  <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
                     <Button
                       variant="primary"
                       onClick={() =>

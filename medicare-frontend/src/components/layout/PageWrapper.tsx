@@ -11,7 +11,7 @@ const PageWrapper = ({ title, children }: PageWrapperProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="flex-1 md:ml-64 flex flex-col overflow-hidden">
         <Header title={title} onMenuClick={() => setSidebarOpen(true)} />

@@ -163,14 +163,14 @@ const DoctorList = () => {
       header: 'Name',
       render: (row) => {
         const d = row as unknown as Doctor;
-        return <span className="font-medium text-gray-900">{d.user?.full_name || '—'}</span>;
+        return <span className="font-medium text-gray-900 dark:text-gray-100">{d.user?.full_name || '—'}</span>;
       },
     },
     {
       key: 'specialization',
       header: 'Specialization',
       render: (row) => (
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
           {row.specialization as string}
         </span>
       ),
@@ -183,7 +183,7 @@ const DoctorList = () => {
       render: (row) => {
         const d = row as unknown as Doctor;
         return (
-          <span className="text-sm text-gray-600">
+          <span className="text-sm text-gray-600 dark:text-gray-400">
             {d.available_days || '—'}{d.start_time ? ` · ${formatTime(d.start_time)} - ${formatTime(d.end_time || '')}` : ''}
           </span>
         );
@@ -232,7 +232,7 @@ const DoctorList = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
             <input
               type="text"
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               placeholder="Search doctors by name, specialization, or license number..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -240,7 +240,7 @@ const DoctorList = () => {
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
@@ -261,7 +261,7 @@ const DoctorList = () => {
       <Modal title="Add New Doctor" isOpen={addModalOpen} onClose={() => setAddModalOpen(false)}>
         <div className="space-y-4">
           {addError && (
-            <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {addError}
             </div>
           )}
@@ -275,7 +275,7 @@ const DoctorList = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Available Days</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Available Days</label>
             <div className="flex flex-wrap gap-2">
               {DAYS.map((day) => (
                 <button
@@ -285,7 +285,7 @@ const DoctorList = () => {
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
                     addForm.available_days.includes(day)
                       ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                      : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                   }`}
                 >
                   {day}
@@ -300,13 +300,13 @@ const DoctorList = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bio</label>
             <textarea
               name="bio"
               value={addForm.bio}
               onChange={handleAddChange}
               rows={3}
-              className="block w-full rounded-lg border border-gray-200 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="block w-full rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Short biography..."
             />
           </div>
@@ -340,7 +340,7 @@ const DoctorList = () => {
             ⚠️ This will also delete all their appointments and prescriptions. This action cannot be undone.
           </p>
           {deleteError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg text-sm text-red-600 dark:text-red-400">
               {deleteError}
             </div>
           )}

@@ -21,10 +21,10 @@ interface FormData {
 }
 
 const fieldClass =
-  'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-200 hover:border-gray-300';
+  'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 hover:border-gray-300 dark:hover:border-gray-500';
 const fieldErrorClass =
   'block w-full rounded-lg border px-3 py-2 text-sm shadow-sm transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent border-red-500';
-const labelClass = 'block text-sm font-medium text-gray-700 mb-1';
+const labelClass = 'block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1';
 
 const GENDERS = ['male', 'female', 'other'];
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
@@ -155,13 +155,13 @@ const PatientForm = () => {
 
           <Card>
             {submitError && (
-              <div className="mb-6 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+              <div className="mb-6 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
                 {submitError}
               </div>
             )}
 
             <div>
-              <p className="text-lg font-semibold text-gray-700 mb-4">Personal Information</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Personal Information</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {renderField('full_name', 'Full Name', 'text', true)}
                 {renderField('date_of_birth', 'Date of Birth', 'date', true)}
@@ -206,7 +206,7 @@ const PatientForm = () => {
                 </div>
               </div>
 
-              <p className="text-lg font-semibold text-gray-700 mb-4">Address</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Address</p>
               <div className="mb-6">
                 <textarea
                   name="address"
@@ -218,13 +218,13 @@ const PatientForm = () => {
                 />
               </div>
 
-              <p className="text-lg font-semibold text-gray-700 mb-4">Emergency Contact</p>
+              <p className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">Emergency Contact</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 {renderField('emergency_contact_name', 'Emergency Contact Name')}
                 {renderField('emergency_contact_phone', 'Emergency Contact Phone')}
               </div>
 
-              <div className="flex gap-3 justify-end mt-6 pt-6 border-t border-gray-100">
+              <div className="flex gap-3 justify-end mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
                 <Button variant="secondary" onClick={() => navigate('/patients')}>
                   Cancel
                 </Button>

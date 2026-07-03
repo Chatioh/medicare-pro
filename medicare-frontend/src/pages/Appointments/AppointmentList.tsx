@@ -103,14 +103,14 @@ const AppointmentList = () => {
     {
       key: 'appointment_number',
       header: 'Appointment No.',
-      render: (row) => <span className="font-mono text-sm text-blue-600">{row.appointment_number as string}</span>,
+      render: (row) => <span className="font-mono text-sm text-blue-600 dark:text-blue-400">{row.appointment_number as string}</span>,
     },
     {
       key: 'patient',
       header: 'Patient',
       render: (row) => {
         const a = row as unknown as Appointment;
-        return <span className="font-medium text-gray-900">{a.patient?.full_name || '—'}</span>;
+        return <span className="font-medium text-gray-900 dark:text-gray-100">{a.patient?.full_name || '—'}</span>;
       },
     },
     {
@@ -156,7 +156,7 @@ const AppointmentList = () => {
             </Button>
             {a.status !== 'cancelled' && (
               <Button size="sm" variant="ghost" onClick={() => setDeleteTarget(a)}>
-                <Trash2 className="w-4 h-4 text-red-500" />
+                <Trash2 className="w-4 h-4 text-red-500 dark:text-red-400" />
               </Button>
             )}
           </div>
@@ -183,12 +183,12 @@ const AppointmentList = () => {
 
           <div className="flex gap-3 flex-wrap mb-4 items-end">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Status</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Status</label>
               <select
                 name="status"
                 value={filters.status}
                 onChange={handleFilterChange}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">All Statuses</option>
                 {STATUSES.filter(Boolean).map((s) => (
@@ -197,13 +197,13 @@ const AppointmentList = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Date</label>
+              <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Date</label>
               <input
                 type="date"
                 name="date"
                 value={filters.date}
                 onChange={handleFilterChange}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="rounded-lg border border-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <Button variant="ghost" size="sm" onClick={clearFilters}>
@@ -213,13 +213,13 @@ const AppointmentList = () => {
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">
+            <div className="mb-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">
               {error}
             </div>
           )}
 
           {!loading && total > 0 && (
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Showing {Math.min(page * limit, total)} of {total} appointments
             </p>
           )}
@@ -237,7 +237,7 @@ const AppointmentList = () => {
 
           {totalPages > 1 && (
             <div className="flex justify-between items-center mt-6">
-              <span className="text-sm text-gray-500">Page {page} of {totalPages}</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Page {page} of {totalPages}</span>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
                   Previous

@@ -1,0 +1,23 @@
+# ============================================================
+# MediCare Pro — Production Override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# Removes dev volume mounts, sets NODE_ENV=production
+# ============================================================
+
+version: '3.8'
+
+services:
+
+  backend:
+    build:
+      target: production
+    environment:
+      NODE_ENV: production
+    volumes: []    # Remove source volume mounts in production
+    restart: always
+
+  frontend:
+    restart: always
+
+  db:
+    restart: always

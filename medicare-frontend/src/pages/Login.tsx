@@ -57,7 +57,7 @@ const Login = () => {
         </div>
         <p className="text-slate-500 text-sm">&copy; 2025 MediCare Pro. All rights reserved.</p>
       </div>
-      <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
+      <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-900">
         <div className="w-full max-w-sm">
           <div className="lg:hidden flex items-center justify-center gap-2.5 mb-10">
             <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
@@ -65,12 +65,12 @@ const Login = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-gray-900">MediCare Pro</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-gray-100">MediCare Pro</span>
           </div>
-          <h2 className="text-2xl font-semibold text-gray-900">Welcome back</h2>
-          <p className="mt-1 text-sm text-gray-500">Sign in to your account to continue.</p>
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Welcome back</h2>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Sign in to your account to continue.</p>
           <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            {error && <div className="bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm border border-red-200">{error}</div>}
+            {error && <div className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm border border-red-200 dark:border-red-800">{error}</div>}
             <Input
               label="Email"
               type="email"
@@ -89,8 +89,8 @@ const Login = () => {
             />
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <input type="checkbox" className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500" />
+                <span className="text-sm text-gray-600 dark:text-gray-400">Remember me</span>
               </label>
               <button type="button" className="text-sm text-blue-600 hover:text-blue-700 font-medium">Forgot password?</button>
             </div>

@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
 
 const RoleRoute = ({ children, roles }: { children: ReactNode; roles: string[] }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return <div className="flex items-center justify-center h-screen"><Spinner /></div>;
+  if (isLoading) return <div className="flex items-center justify-center h-screen bg-white dark:bg-gray-900"><Spinner /></div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   if (!roles.includes(user?.role ?? '')) return <Navigate to="/unauthorized" replace />;
   return <>{children}</>;
@@ -43,7 +43,7 @@ const PublicRoute = ({ children }: { children: ReactNode }) => {
 
 const RootRedirect = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return <div className="flex items-center justify-center h-screen"><Spinner /></div>;
+  if (isLoading) return <div className="flex items-center justify-center h-screen bg-white dark:bg-gray-900"><Spinner /></div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   switch (user?.role) {
     case 'admin': return <Navigate to="/dashboard" replace />;

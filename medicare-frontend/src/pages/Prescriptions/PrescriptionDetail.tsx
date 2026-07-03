@@ -65,10 +65,11 @@ const PrescriptionDetail = () => {
   const [printing, setPrinting] = useState(false);
   const printingRef = useRef(false);
 
-  if (!id) {
-    navigate('/prescriptions');
-    return null;
-  }
+  useEffect(() => {
+    if (!id) {
+      navigate('/prescriptions');
+    }
+  }, [id, navigate]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -173,8 +174,8 @@ const PrescriptionDetail = () => {
       header: 'Medication',
       render: (row) => (
         <div className="flex items-center gap-2">
-          <Pill className="w-4 h-4 text-gray-400 flex-shrink-0" />
-          <span className="font-medium text-gray-900">
+          <Pill className="w-4 h-4 text-gray-400 dark:text-gray-500 flex-shrink-0" />
+          <span className="font-medium text-gray-900 dark:text-gray-100">
             {(row as unknown as PrescriptionItem).medication_name}
           </span>
         </div>
@@ -184,7 +185,7 @@ const PrescriptionDetail = () => {
       key: 'dosage',
       header: 'Dosage',
       render: (row) => (
-        <span className="font-medium text-blue-600">
+        <span className="font-medium text-blue-600 dark:text-blue-400">
           {(row as unknown as PrescriptionItem).dosage}
         </span>
       ),
@@ -212,7 +213,7 @@ const PrescriptionDetail = () => {
       render: (row) => {
         const instr = (row as unknown as PrescriptionItem).instructions;
         return (
-          <span className={instr ? 'text-gray-700' : 'text-gray-400 italic'}>{instr || '—'}</span>
+          <span className={instr ? 'text-gray-700 dark:text-gray-300' : 'text-gray-400 dark:text-gray-500 italic'}>{instr || '—'}</span>
         );
       },
     },
@@ -226,16 +227,16 @@ const PrescriptionDetail = () => {
           {/* Back nav */}
           <button
             onClick={() => navigate('/prescriptions')}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Prescriptions
           </button>
 
           {/* ── Header action bar ─────────────────────────────── */}
-          <div className="flex items-center justify-between gap-4 p-5 bg-white rounded-xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between gap-4 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-3 min-w-0">
-              <span className="font-mono text-lg text-blue-600 font-bold truncate">
+              <span className="font-mono text-lg text-blue-600 dark:text-blue-400 font-bold truncate">
                 {prescription.prescription_number}
               </span>
               <Badge status={prescription.status} />
@@ -275,57 +276,57 @@ const PrescriptionDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card title="Prescription Information">
               <div className="space-y-0">
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Patient</span>
+                    <User className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Patient</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {prescription.patient?.full_name || '—'}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Stethoscope className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Doctor</span>
+                    <Stethoscope className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Doctor</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {prescription.doctor?.user?.full_name || '—'}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Stethoscope className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">License No.</span>
+                    <Stethoscope className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">License No.</span>
                   </div>
-                  <span className="text-sm font-mono font-medium text-gray-900">
+                  <span className="text-sm font-mono font-medium text-gray-900 dark:text-gray-100">
                     {prescription.doctor?.license_number || '—'}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Issued At</span>
+                    <Calendar className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Issued At</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {formatDate(prescription.issued_at as string)}
                   </span>
                 </div>
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Expires At</span>
+                    <AlertCircle className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Expires At</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {prescription.expires_at ? formatDate(prescription.expires_at) : 'No expiry'}
                   </span>
                 </div>
                 <div className="flex justify-between py-2.5">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Diagnosis</span>
+                    <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Diagnosis</span>
                   </div>
-                  <span className="text-sm font-medium text-gray-900 text-right max-w-[200px]">
+                  <span className="text-sm font-medium text-gray-900 dark:text-gray-100 text-right max-w-[200px]">
                     {prescription.diagnosis}
                   </span>
                 </div>
@@ -334,22 +335,22 @@ const PrescriptionDetail = () => {
 
             <Card title="Additional Notes">
               <div className="space-y-0">
-                <div className="flex justify-between py-2.5 border-b border-gray-50">
+                <div className="flex justify-between py-2.5 border-b border-gray-50 dark:border-gray-700/50">
                   <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-500">Status</span>
+                    <FileText className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+                    <span className="text-sm text-gray-500 dark:text-gray-400">Status</span>
                   </div>
                   <Badge status={prescription.status} />
                 </div>
                 <div className="py-2.5">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">
                     Notes
                   </span>
-                  <p className="text-sm text-gray-700">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
                     {prescription.notes?.trim() ? (
                       prescription.notes
                     ) : (
-                      <span className="text-gray-400 italic">No notes added</span>
+                      <span className="text-gray-400 dark:text-gray-500 italic">No notes added</span>
                     )}
                   </p>
                 </div>
