@@ -54,7 +54,7 @@ const Carousel = ({ slides, autoPlayMs = 5000 }: CarouselProps) => {
       <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
 
       {/* Text overlay */}
-      <div className="absolute inset-0 z-30 flex flex-col justify-end p-6 sm:p-8 md:p-10 pointer-events-none">
+      <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 sm:p-8 md:p-10 pointer-events-none">
         {slides.map((slide, i) => (
           <div
             key={slide.src}
@@ -77,21 +77,21 @@ const Carousel = ({ slides, autoPlayMs = 5000 }: CarouselProps) => {
           {/* Arrows */}
           <button
             onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
             aria-label="Previous slide"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-40 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full backdrop-blur-sm transition-colors"
             aria-label="Next slide"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
 
           {/* Dots */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 flex gap-2">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-2">
             {slides.map((_, i) => (
               <button
                 key={i}
