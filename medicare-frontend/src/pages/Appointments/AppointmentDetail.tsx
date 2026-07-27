@@ -126,11 +126,11 @@ const AppointmentDetail = () => {
             Back to Appointments
           </button>
 
-          <div className="flex items-center justify-between gap-6 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div className="flex items-center gap-4 flex-wrap">
               <span className="font-mono text-lg text-blue-600 dark:text-blue-400 font-bold">{appointment.appointment_number}</span>
               <Badge status={appointment.status} />
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 capitalize">
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 capitalize">
                 {appointment.type.replace(/_/g, ' ')}
               </span>
             </div>
@@ -141,8 +141,8 @@ const AppointmentDetail = () => {
               </Button>
               {appointment.status !== 'cancelled' && (
                 <Button size="sm" variant="ghost" onClick={() => setShowCancelModal(true)}>
-                  <Trash2 className="w-4 h-4 mr-1 text-red-500" />
-                  <span className="text-red-500">Cancel</span>
+                  <Trash2 className="w-4 h-4 mr-1 text-red-500 dark:text-red-400" />
+                  <span className="text-red-500 dark:text-red-400">Cancel</span>
                 </Button>
               )}
             </div>

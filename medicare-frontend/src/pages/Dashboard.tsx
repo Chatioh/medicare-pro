@@ -3,9 +3,33 @@ import PageWrapper from '../components/layout/PageWrapper';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Spinner from '../components/ui/Spinner';
+import Carousel from '../components/ui/Carousel';
 import { getStats, getAppointmentsToday, getRecentPatients } from '../api/dashboardApi';
 import { DashboardStats, Appointment, Patient } from '../types';
 import { Users, Stethoscope, CalendarCheck, Pill, Activity } from 'lucide-react';
+
+const CAROUSEL_SLIDES = [
+  {
+    src: '/carousel/prescription.avif',
+    heading: 'Digital Prescriptions, Zero Errors',
+    description: 'Issue, track and dispense medications with full lifecycle control',
+  },
+  {
+    src: '/carousel/Consultation.avif',
+    heading: 'Smarter Doctor Consultations',
+    description: 'Access patient history and book appointments in seconds',
+  },
+  {
+    src: '/carousel/DoctorInWhite.avif',
+    heading: 'Care Starts With Information',
+    description: 'Doctors get the right patient data at the right time',
+  },
+  {
+    src: '/carousel/NurseInWhite.avif',
+    heading: 'Nurses In Full Control',
+    description: 'Dispense prescriptions and monitor patients with confidence',
+  },
+];
 
 const Dashboard = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -50,6 +74,10 @@ const Dashboard = () => {
 
   return (
     <PageWrapper title="Dashboard">
+      <div className="mb-8">
+        <Carousel slides={CAROUSEL_SLIDES} />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {statCards.map((card) => (
           <div key={card.label} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 relative overflow-hidden">
