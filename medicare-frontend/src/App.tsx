@@ -76,9 +76,9 @@ const AppRoutes = () => {
       <Route path="/doctors" element={<RoleRoute roles={['admin']}><DoctorList /></RoleRoute>} />
       <Route path="/doctors/:id" element={<RoleRoute roles={['admin', 'doctor']}><DoctorProfile /></RoleRoute>} />
 
-      <Route path="/prescriptions" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionList /></RoleRoute>} />
+      <Route path="/prescriptions" element={<RoleRoute roles={['admin', 'doctor', 'nurse']}><PrescriptionList /></RoleRoute>} />
       <Route path="/prescriptions/new" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionForm /></RoleRoute>} />
-      <Route path="/prescriptions/:id" element={<RoleRoute roles={['admin', 'doctor']}><PrescriptionDetail /></RoleRoute>} />
+      <Route path="/prescriptions/:id" element={<RoleRoute roles={['admin', 'doctor', 'nurse']}><PrescriptionDetail /></RoleRoute>} />
 
       <Route path="/staff" element={<RoleRoute roles={['admin']}><StaffList /></RoleRoute>} />
 

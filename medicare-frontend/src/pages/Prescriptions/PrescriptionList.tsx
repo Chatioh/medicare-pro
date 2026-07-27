@@ -179,7 +179,7 @@ const PrescriptionList = () => {
           >
             <Printer className="w-4 h-4" />
           </Button>
-          {(row.status as string) === 'issued' && hasRole('admin', 'nurse') && (
+          {(row.status as string) === 'issued' && hasRole('admin', 'doctor', 'nurse') && (
             <Button size="sm" variant="success" onClick={() => handleDispense(row.id as string)}>
               <CheckCircle className="w-4 h-4 mr-1" />
               Dispense

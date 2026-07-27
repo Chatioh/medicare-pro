@@ -21,7 +21,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
     { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, show: hasRole('admin') },
     { to: '/patients', label: 'Patients', icon: Users, show: hasRole('admin', 'doctor', 'nurse', 'receptionist') },
     { to: '/appointments', label: 'Appointments', icon: Calendar, show: hasRole('admin', 'doctor', 'nurse', 'receptionist') },
-    { to: '/prescriptions', label: 'Prescriptions', icon: FileText, show: hasRole('admin', 'doctor') },
+    { to: '/prescriptions', label: 'Prescriptions', icon: FileText, show: hasRole('admin', 'doctor', 'nurse') },
     { to: '/doctors', label: 'Doctors', icon: UserCheck, show: hasRole('admin') },
     { to: '/staff', label: 'Staff', icon: UserCog, show: hasRole('admin') },
   ];

@@ -9,7 +9,7 @@ router.use(authenticate);
 router.get('/', authorize('doctor', 'admin', 'nurse'), prescriptionController.getAllPrescriptions);
 router.post('/', authorize('doctor', 'admin'), prescriptionController.createPrescription);
 router.get('/:id', prescriptionController.getPrescriptionById);
-router.put('/:id/dispense', authorize('nurse', 'admin'), prescriptionController.dispensePrescription);
+router.put('/:id/dispense', authorize('doctor', 'nurse', 'admin'), prescriptionController.dispensePrescription);
 router.put('/:id/cancel', authorize('doctor', 'admin'), prescriptionController.cancelPrescription);
 
 module.exports = router;
